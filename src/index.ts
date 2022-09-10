@@ -1,1 +1,1 @@
-export * from './Component';
+console.log('init');
