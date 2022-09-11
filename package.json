@@ -35,16 +35,21 @@
     "build": "npm run build:clean && run-p build:compile:*",
     "build:clean": "rimraf dist",
     "build:compile:esm": "tsc",
-    "build:compile:commonjs": "tsc -p tsconfig.commonjs.json",
+    "build:compile:commonjs": "tsc -p tsconfig.commonjs.json && cp ./templates/package.commonjs.json ./dist/commonjs/package.json",
     "build:compile:types": "tsc  -p tsconfig.types.json"
   },
-  "dependencies": {},
+  "dependencies": {
+    "htmlescape": "^1.1.1"
+  },
   "devDependencies": {
     "@commitlint/cli": "^17.1.2",
     "@commitlint/config-conventional": "^17.1.0",
     "@gravity-ui/eslint-config": "^1.0.2",
     "@gravity-ui/prettier-config": "^1.0.1",
     "@gravity-ui/tsconfig": "^1.0.0",
+    "@types/express": "^4.17.13",
+    "@types/htmlescape": "^1.1.1",
+    "@types/node": "^14",
     "@types/jest": "^29.0.0",
     "eslint": "^8.23.0",
     "jest": "^29.0.2",
