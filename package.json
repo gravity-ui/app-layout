@@ -36,7 +36,8 @@
     "build:clean": "rimraf dist",
     "build:compile:esm": "tsc",
     "build:compile:commonjs": "tsc -p tsconfig.commonjs.json && cp ./templates/package.commonjs.json ./dist/commonjs/package.json",
-    "build:compile:types": "tsc  -p tsconfig.types.json"
+    "build:compile:types": "tsc  -p tsconfig.types.json",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "htmlescape": "^1.1.1"
