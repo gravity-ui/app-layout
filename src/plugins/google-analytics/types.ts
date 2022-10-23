@@ -2,13 +2,7 @@ export interface GoogleAnalyticsCounter {
     id: string;
 }
 
-export interface PluginOptions {
+export interface GoogleAnalytisCounterPluginOptions {
     useBeaconTransport?: boolean;
     counter: GoogleAnalyticsCounter;
-}
-
-declare module '../../types.js' {
-    export interface PluginsOptions {
-        googleAnalytics: PluginOptions;
-    }
 }

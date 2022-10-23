@@ -57,8 +57,8 @@ export interface RenderHelpers {
     renderMeta(meta: Meta): string;
     renderLink(link: Link): string;
 }
-export interface Plugin<Options = any> {
-    name: string;
+export interface Plugin<Options = any, K extends string = never> {
+    name: K;
     apply: (params: {
         options: Options | undefined;
         renderContent: RenderContent;
@@ -67,9 +67,22 @@ export interface Plugin<Options = any> {
     }) => void;
 }
 
-export interface PluginsOptions {}
+type InferPluginOptions<T> = T extends {name: infer K; apply: infer ApplyFn}
+    ? K extends string
+        ? ApplyFn extends (...args: infer Args) => any
+            ? Args[0] extends {options: infer O}
+                ? Record<K, O>
+                : {}
+            : {}
+        : {}
+    : {};
 
-export interface RenderParams<Data> extends CommonOptions {
+export type ArrayPluginOptions<T extends readonly [...items: any]> = First<T> & Rest<T>;
+
+type First<T> = T extends readonly [f: infer F, ...r: any] ? InferPluginOptions<F> : {};
+type Rest<T> = T extends readonly [first: any, ...rest: infer R] ? ArrayPluginOptions<R> : {};
+
+export interface RenderParams<Data, PluginsOptions = unknown> extends CommonOptions {
     data?: Data;
     icon?: Icon;
     nonce?: string;
@@ -89,5 +102,3 @@ export interface RenderParams<Data> extends CommonOptions {
     // plugins options
     pluginsOptions?: Partial<PluginsOptions>;
 }
-
-export type RenderFunction = <Data>(params: RenderParams<Data>) => string;

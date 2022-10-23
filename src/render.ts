@@ -1,6 +1,6 @@
 import htmlescape from 'htmlescape';
 import {attrs, getRenderHelpers, hasProperty} from './utils.js';
-import type {Icon, Meta, RenderParams, Plugin} from './types.js';
+import type {Icon, Meta, RenderParams, Plugin, ArrayPluginOptions} from './types.js';
 
 const defaultIcon: Icon = {
     type: 'image/png',
@@ -15,8 +15,12 @@ const defaultMeta: Meta[] = [
     },
 ];
 
-export function createRenderFunction() {
-    return function render<Data>(params: RenderParams<Data>, plugins: Plugin[] = []) {
+export function createRenderFunction<
+    PluginsConstArray extends readonly [...items: Plugin<any, any>[]] = [],
+>(plugins: PluginsConstArray) {
+    return function render<Data>(
+        params: RenderParams<Data, ArrayPluginOptions<PluginsConstArray>>,
+    ) {
         const helpers = getRenderHelpers(params);
 
         const icon: Icon = {
