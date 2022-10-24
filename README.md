@@ -12,20 +12,22 @@ With `express`:
 
 ```js
 import express from 'express';
-import {createMiddleware} from '@gravity-ui/app-layout';
+import {createRenderFunction} from '@gravity-ui/app-layout';
 
 const app = express();
 
-app.use(createMiddleware());
+const renderLayout = createRenderFunction();
 
 app.get('/', function (req, res) {
-  res.renderLayout({
-    // RenderParams
-    title: 'Home page',
-    bodyContent: {
-      root: 'Hello world!',
-    },
-  });
+  res.send(
+    renderLayout({
+      // RenderParams
+      title: 'Home page',
+      bodyContent: {
+        root: 'Hello world!',
+      },
+    }),
+  );
 });
 
 app.listen(3000);
