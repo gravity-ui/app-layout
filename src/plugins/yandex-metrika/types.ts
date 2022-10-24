@@ -13,7 +13,7 @@ export interface MetrikaCounter {
     type?: number;
 }
 
-export type PluginOptions = {
+export type MetrikaOptions = {
     /**
      * metrics script source
      *
@@ -22,9 +22,3 @@ export type PluginOptions = {
     src?: string;
     counter: MetrikaCounter | MetrikaCounter[];
 };
-
-declare module '../../types.js' {
-    export interface PluginsOptions {
-        yandexMetrika: PluginOptions;
-    }
-}

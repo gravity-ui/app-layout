@@ -1,4 +1,3 @@
-export {createMiddleware} from './createMiddleware.js';
 export {createRenderFunction} from './render.js';
 export {
     createGoogleAnalyticsPlugin,
@@ -9,7 +8,6 @@ export {
 
 export type {
     Plugin,
-    PluginsOptions,
     Icon,
     Link,
     Script,

@@ -57,8 +57,8 @@ export interface RenderHelpers {
     renderMeta(meta: Meta): string;
     renderLink(link: Link): string;
 }
-export interface Plugin<Options = any> {
-    name: string;
+export interface Plugin<Options = any, Name extends string = string> {
+    name: Name;
     apply: (params: {
         options: Options | undefined;
         renderContent: RenderContent;
@@ -66,10 +66,7 @@ export interface Plugin<Options = any> {
         utils: RenderHelpers;
     }) => void;
 }
-
-export interface PluginsOptions {}
-
-export interface RenderParams<Data> extends CommonOptions {
+export interface RenderParams<Data, Plugins extends Plugin[] = []> extends CommonOptions {
     data?: Data;
     icon?: Icon;
     nonce?: string;
@@ -87,7 +84,22 @@ export interface RenderParams<Data> extends CommonOptions {
         afterRoot?: string;
     };
     // plugins options
-    pluginsOptions?: Partial<PluginsOptions>;
+    pluginsOptions?: Partial<PluginsOptions<Plugins>>;
 }
 
-export type RenderFunction = <Data>(params: RenderParams<Data>) => string;
+type PluginOptions<PluginType> = PluginType extends {
+    name: infer Name;
+    apply(args: {options: infer Options}): void;
+}
+    ? {[K in Name & string]: Options}
+    : {};
+
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void
+    ? I
+    : never;
+
+type PluginsOptions<Plugins extends Plugin[]> = UnionToIntersection<PluginOptions<Plugins[number]>>;
+
+export type RenderFunction<Plugins extends Plugin[] = []> = <Data>(
+    params: RenderParams<Data, Plugins>,
+) => string;

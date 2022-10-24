@@ -15,8 +15,8 @@ const defaultMeta: Meta[] = [
     },
 ];
 
-export function createRenderFunction() {
-    return function render<Data>(params: RenderParams<Data>, plugins: Plugin[] = []) {
+export function createRenderFunction<Plugins extends Plugin[]>(plugins?: Plugins) {
+    return function render<Data>(params: RenderParams<Data, Plugins>) {
         const helpers = getRenderHelpers(params);
 
         const icon: Icon = {
@@ -41,7 +41,7 @@ export function createRenderFunction() {
         };
 
         const {lang, isMobile, title, pluginsOptions = {}} = params;
-        for (const plugin of plugins) {
+        for (const plugin of plugins ?? []) {
             plugin.apply({
                 options: hasProperty(pluginsOptions, plugin.name)
                     ? pluginsOptions[plugin.name]

@@ -34,7 +34,7 @@ app.listen(3000);
 where
 
 ```typescript
-interface RenderParams<Data> {
+interface RenderParams<Data, Plugins> {
   // Any json compatible data, will be set to window.__DATA__ on the page
   data?: Data;
   // favicon
@@ -75,7 +75,7 @@ interface RenderParams<Data> {
     afterRoot?: string;
   };
   // plugins options
-  pluginsOptions?: Partial<PluginsOptions>;
+  pluginsOptions?: Partial<PluginsOptions<Plugins>>;
 }
 ```
 
@@ -225,8 +225,8 @@ Render function can be extended by plugins. Plugin may rewrite user defined rend
 Plugin is an object with `name` and `apply` properties:
 
 ```typescript
-interface Plugin<Options = any> {
-  name: string;
+interface Plugin<Options = any, Name = string> {
+  name: Name;
   apply: (params: {
     options: Options | undefined; // passed through `renderLayout` function in `pluginsOptions` parameter.
     commonOptions: CommonOptions;
@@ -276,12 +276,12 @@ Adds google analytics counter on the page.
 Usage:
 
 ```js
-import {createMiddleware, createGoogleAnalyticsPlugin} from '@gravity-ui/app-layout';
+import {createRenderFunction, createGoogleAnalyticsPlugin} from '@gravity-ui/app-layout';
 
-app.use(createMiddleware({plugins: [createGoogleAnalyticsPlugin()]}));
+const renderLayout = createRenderFunction([createGoogleAnalyticsPlugin()]);
 
 app.get((req, res) => {
-    res.renderLayout({
+    res.send(renderLayout({
         title: 'Home page'
         pluginsOptions: {
             googleAnalytics: {
@@ -291,7 +291,7 @@ app.get((req, res) => {
                 }
             },
         },
-    };
+    }));
 })
 ```
 
@@ -302,7 +302,7 @@ interface GoogleAnalyticsCounter {
   id: string;
 }
 
-interface PluginOptions {
+interface GoogleAnalyticsOptions {
   useBeaconTransport?: boolean;
   counter: GoogleAnalyticsCounter;
 }
@@ -317,10 +317,10 @@ Usage:
 ```js
 import {createMiddleware, createYandexMetrikaPlugin} from '@gravity-ui/app-layout';
 
-app.use(createMiddleware({plugins: [createYandexMetrikaPlugin()]}));
+const renderLayout = createRenderFunction([createYandexMetrikaPlugin()]);
 
 app.get((req, res) => {
-    res.renderLayout({
+    res.send(renderLayout({
         title: 'Home page'
         pluginsOptions: {
             yandexMetrica: {
@@ -333,7 +333,7 @@ app.get((req, res) => {
                 }
             },
         },
-    };
+    }));
 })
 ```
 
@@ -355,7 +355,7 @@ export interface MetrikaCounter {
   type?: number;
 }
 
-export type PluginOptions = {
+export type MetrikaOptions = {
   src?: string;
   counter: MetrikaCounter | MetrikaCounter[];
 };
@@ -370,24 +370,26 @@ Usage:
 ```js
 import {createMiddleware, createLayoutPlugin} from '@gravity-ui/app-layout';
 
-app.use(createMiddleware({plugins: [createLayoutPlugin({manifest: 'path/to/assets-manifest.json', publicPath: '/build/'})]}));
+const renderLayout = createRenderFunction([
+    createLayoutPlugin({manifest: 'path/to/assets-manifest.json', publicPath: '/build/'})
+]);
 
 app.get((req, res) => {
-    res.renderLayout({
+    res.send(renderLayout({
         title: 'Home page'
         pluginsOptions: {
             layout: {
                 name: 'home',
             },
         },
-    };
+    }));
 })
 ```
 
 Plugin options:
 
 ```typescript
-export interface PluginOptions {
+export interface LayoutOptions {
   name: string;
   prefix?: string;
 }
@@ -398,12 +400,12 @@ There is helper to create all plugins:
 ```js
 import {createMiddleware, createDefaultPlugins} from '@gravity-ui/app-layout';
 
-app.use(createMiddleware({plugins: [
+const renderLayout = createRenderFunction(
     createDefaultPlugins({layout: {manifest: 'path/to/assets-manifest.json'}})
-]}));
+);
 
 app.get((req, res) => {
-    res.renderLayout({
+    res.send(renderLayout({
         title: 'Home page',
         pluginsOptions: {
             layout: {
@@ -416,30 +418,6 @@ app.get((req, res) => {
                 counter: {...}
             },
         },
-    };
+    }));
 })
-```
-
-## Typescript
-
-To register `renderLayout` function on `Response` instance add following type:
-
-```typescript
-declare global {
-  namespace Express {
-    export interface Response {
-      renderLayout: <T>(params: RenderParams<T>) => string;
-    }
-  }
-}
-```
-
-To register own plugins options on `PluginsOptions` type add following type:
-
-```typescript
-declare module '@gravity-ui/app-layout' {
-  export interface PluginsOptions {
-    yourPluginName?: YourPluginOptions;
-  }
-}
 ```

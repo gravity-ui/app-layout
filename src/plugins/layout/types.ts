@@ -10,13 +10,7 @@ export type Manifest = Record<string, string> & {
     entrypoints?: Record<string, EntrypointAssets>;
 };
 
-export interface PluginOptions {
+export interface LayoutOptions {
     name: string;
     prefix?: string;
-}
-
-declare module '../../types.js' {
-    export interface PluginsOptions {
-        layout: PluginOptions;
-    }
 }
