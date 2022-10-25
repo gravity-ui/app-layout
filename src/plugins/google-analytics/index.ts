@@ -32,6 +32,12 @@ function renderGoogleAnalyticsCounter(
 
     const useBeaconCode = params.useBeaconTransport ? ", {'transport_type': 'beacon'}" : '';
 
+    const consentConfig = {
+        ad_storage: params.defaultConsent?.adStorage,
+        analytics_storage: params.defaultConsent?.analyticsStorage,
+        wait_for_update: params.defaultConsent?.waitForUpdate,
+    };
+
     return `
         <!-- Google Analytics -->
         ${utils.renderScript({
@@ -42,7 +48,8 @@ function renderGoogleAnalyticsCounter(
             `window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', '${counterId}'${useBeaconCode});`,
+            gtag('config', '${counterId}'${useBeaconCode});
+            gtag('consent', 'default', ${JSON.stringify(consentConfig)});`,
         )}
         <!-- /Google Analytics -->
     `;
