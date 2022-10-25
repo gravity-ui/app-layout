@@ -10,7 +10,7 @@ export type Manifest = Record<string, string> & {
     entrypoints?: Record<string, EntrypointAssets>;
 };
 
-export interface LayoutOptions {
+export interface LayoutPluginOptions {
     name: string;
     prefix?: string;
 }

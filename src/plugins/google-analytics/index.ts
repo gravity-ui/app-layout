@@ -1,9 +1,12 @@
-import type {GoogleAnalyticsOptions} from './types.js';
+import type {GoogleAnalyticsPluginOptions} from './types.js';
 import type {Plugin, RenderHelpers} from '../../types.js';
 
-export type {GoogleAnalyticsCounter} from './types.js';
+export type {GoogleAnalyticsCounter, GoogleAnalyticsPluginOptions} from './types.js';
 
-export function createGoogleAnalyticsPlugin(): Plugin<GoogleAnalyticsOptions, 'googleAnalytics'> {
+export function createGoogleAnalyticsPlugin(): Plugin<
+    GoogleAnalyticsPluginOptions,
+    'googleAnalytics'
+> {
     return {
         name: 'googleAnalytics',
         apply({options, renderContent, utils}) {
@@ -17,7 +20,7 @@ export function createGoogleAnalyticsPlugin(): Plugin<GoogleAnalyticsOptions, 'g
 }
 
 function renderGoogleAnalyticsCounter(
-    params: GoogleAnalyticsOptions,
+    params: GoogleAnalyticsPluginOptions,
     utils: RenderHelpers,
 ): string {
     const counter = params.counter;

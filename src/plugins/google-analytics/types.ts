@@ -2,7 +2,7 @@ export interface GoogleAnalyticsCounter {
     id: string;
 }
 
-export interface GoogleAnalyticsOptions {
+export interface GoogleAnalyticsPluginOptions {
     useBeaconTransport?: boolean;
     counter: GoogleAnalyticsCounter;
 }

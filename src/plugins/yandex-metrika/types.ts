@@ -13,7 +13,7 @@ export interface MetrikaCounter {
     type?: number;
 }
 
-export type MetrikaOptions = {
+export type MetrikaPluginOptions = {
     /**
      * metrics script source
      *

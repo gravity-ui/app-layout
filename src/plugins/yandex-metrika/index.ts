@@ -1,9 +1,9 @@
 import type {Plugin, RenderHelpers} from '../../types.js';
-import type {MetrikaOptions} from './types.js';
+import type {MetrikaPluginOptions} from './types.js';
 
-export type {MetrikaCounter} from './types.js';
+export type {MetrikaCounter, MetrikaPluginOptions} from './types.js';
 
-export function createYandexMetrikaPlugin(): Plugin<MetrikaOptions, 'yandexMetrika'> {
+export function createYandexMetrikaPlugin(): Plugin<MetrikaPluginOptions, 'yandexMetrika'> {
     return {
         name: 'yandexMetrika',
         apply({options, renderContent, utils}) {
@@ -28,7 +28,7 @@ const defaultCounterConfig = {
     type: 0,
 };
 
-export function renderMetrika(params: MetrikaOptions, utils: RenderHelpers): string {
+export function renderMetrika(params: MetrikaPluginOptions, utils: RenderHelpers): string {
     let counters = params.counter;
     if (!Array.isArray(counters)) {
         counters = [counters];

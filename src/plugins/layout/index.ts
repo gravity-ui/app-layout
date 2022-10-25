@@ -2,7 +2,9 @@ import htmlescape from 'htmlescape';
 import {getAbsoluteUrl, getJSONContent} from './helpers.js';
 
 import type {Plugin} from '../../types.js';
-import type {Manifest, LayoutOptions} from './types.js';
+import type {Manifest, LayoutPluginOptions} from './types.js';
+
+export type {LayoutPluginOptions} from './types.js';
 
 export interface LayoutInitOptions {
     publicPath?: string;
@@ -11,7 +13,7 @@ export interface LayoutInitOptions {
 export function createLayoutPlugin({
     publicPath = '/build/',
     manifest,
-}: LayoutInitOptions): Plugin<LayoutOptions, 'layout'> {
+}: LayoutInitOptions): Plugin<LayoutPluginOptions, 'layout'> {
     return {
         name: 'layout',
         apply({options, renderContent}) {
