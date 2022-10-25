@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/gravity-ui/app-layout/compare/v1.0.1...v1.1.0) (2022-10-25)
+
+
+### Features
+
+* add default consent to GA ([cba6e51](https://github.com/gravity-ui/app-layout/commit/cba6e5187eedcc57ea38b8709c4c86d7f709eee7))
+
 ## [1.0.1](https://github.com/gravity-ui/app-layout/compare/v1.0.0...v1.0.1) (2022-10-25)
 
 
