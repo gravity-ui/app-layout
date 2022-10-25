@@ -77,7 +77,7 @@ export interface RenderParams<Data, Plugins extends Plugin[] = []> extends Commo
     styleSheets?: Stylesheet[];
     inlineScripts?: string[];
     inlineStyleSheets?: string[];
-    bodyContent: {
+    bodyContent?: {
         className?: string;
         beforeRoot?: string;
         root?: string;
