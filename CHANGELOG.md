@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/gravity-ui/app-layout/compare/v1.0.0...v1.0.1) (2022-10-25)
+
+
+### Bug Fixes
+
+* export plugins options types ([e9e449d](https://github.com/gravity-ui/app-layout/commit/e9e449da277a25a0c360620be0da542e48bc2e5f))
+
 ## 1.0.0 (2022-10-25)
 
 
