@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/gravity-ui/app-layout/compare/v1.1.0...v1.1.1) (2022-10-25)
+
+
+### Bug Fixes
+
+* make bodyContent optional ([8a60c5d](https://github.com/gravity-ui/app-layout/commit/8a60c5dd90de98ca425ced04abcf27e42a1b8a3e))
+
 ## [1.1.0](https://github.com/gravity-ui/app-layout/compare/v1.0.1...v1.1.0) (2022-10-25)
 
 
