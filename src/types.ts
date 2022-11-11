@@ -18,6 +18,7 @@ export interface Link {
     type?: string;
     title?: HTMLLinkElement['title'];
     crossOrigin?: '' | 'anonymous' | 'use-credentials';
+    hreflang?: HTMLLinkElement['hreflang'];
 }
 
 export interface Icon {
