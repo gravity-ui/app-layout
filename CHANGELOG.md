@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/gravity-ui/app-layout/compare/v1.1.1...v1.1.2) (2022-11-11)
+
+
+### Bug Fixes
+
+* add hreflang to Link type ([#6](https://github.com/gravity-ui/app-layout/issues/6)) ([da68569](https://github.com/gravity-ui/app-layout/commit/da685696bfcf75b01a4835ffe88d199de373adb1))
+
 ## [1.1.1](https://github.com/gravity-ui/app-layout/compare/v1.1.0...v1.1.1) (2022-10-25)
 
 
