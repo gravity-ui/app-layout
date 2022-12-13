@@ -36,8 +36,16 @@ export function getRenderHelpers(params: {nonce?: string}): RenderHelpers {
             content,
         })}>`;
     }
-    function renderLink({href, crossOrigin, ...rest}: Link) {
-        return href ? `<link ${attrs({href, crossorigin: crossOrigin, ...rest})}>` : '';
+    function renderLink({href, crossOrigin, as, ...rest}: Link) {
+        return href
+            ? `<link ${attrs({
+                  href,
+                  crossorigin: crossOrigin,
+                  as,
+                  nonce: as === 'script' ? params.nonce : undefined,
+                  ...rest,
+              })}>`
+            : '';
     }
 
     return {
