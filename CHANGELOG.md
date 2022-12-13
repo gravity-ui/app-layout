@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/gravity-ui/app-layout/compare/v1.1.2...v1.1.3) (2022-12-13)
+
+
+### Bug Fixes
+
+* add nonce for preload link for scripts ([#8](https://github.com/gravity-ui/app-layout/issues/8)) ([75274b0](https://github.com/gravity-ui/app-layout/commit/75274b0f63e590fe6bde64a807141568fd3fff87))
+
 ## [1.1.2](https://github.com/gravity-ui/app-layout/compare/v1.1.1...v1.1.2) (2022-11-11)
 
 
