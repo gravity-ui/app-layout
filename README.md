@@ -1,4 +1,4 @@
-# @gravity-ui/app-layout &middot; [![npm package](https://img.shields.io/npm/v/@gravity-ui/app-layout)](https://www.npmjs.com/package/@gravity-ui/app-layout) [![CI](https://img.shields.io/github/workflow/status/gravity-ui/app-layout/CI/main?label=CI&logo=github)](https://github.com/gravity-ui/app-layout/actions/workflows/ci.yml?query=branch:main)
+# @gravity-ui/app-layout &middot; [![npm package](https://img.shields.io/npm/v/@gravity-ui/app-layout)](https://www.npmjs.com/package/@gravity-ui/app-layout) [![CI](https://img.shields.io/github/actions/workflow/status/gravity-ui/app-layout/.github/workflows/ci.yml?label=CI&logo=github)](https://github.com/gravity-ui/app-layout/actions/workflows/ci.yml?query=branch:main)
 
 ## Install
 
@@ -283,18 +283,20 @@ import {createRenderFunction, createGoogleAnalyticsPlugin} from '@gravity-ui/app
 const renderLayout = createRenderFunction([createGoogleAnalyticsPlugin()]);
 
 app.get((req, res) => {
-    res.send(renderLayout({
-        title: 'Home page'
-        pluginsOptions: {
-            googleAnalytics: {
-                useBeaconTransport: true, // enables use of navigator.sendBeacon
-                counter: {
-                    id: 'some id',
-                }
-            },
+  res.send(
+    renderLayout({
+      title: 'Home page',
+      pluginsOptions: {
+        googleAnalytics: {
+          useBeaconTransport: true, // enables use of navigator.sendBeacon
+          counter: {
+            id: 'some id',
+          },
         },
-    }));
-})
+      },
+    }),
+  );
+});
 ```
 
 Plugin options:
@@ -322,21 +324,23 @@ import {createMiddleware, createYandexMetrikaPlugin} from '@gravity-ui/app-layou
 const renderLayout = createRenderFunction([createYandexMetrikaPlugin()]);
 
 app.get((req, res) => {
-    res.send(renderLayout({
-        title: 'Home page'
-        pluginsOptions: {
-            yandexMetrica: {
-                counter: {
-                    id: 123123123,
-                    defer: true,
-                    clickmap: true,
-                    trackLinks: true,
-                    accurateTrackBounce: true,
-                }
-            },
+  res.send(
+    renderLayout({
+      title: 'Home page',
+      pluginsOptions: {
+        yandexMetrica: {
+          counter: {
+            id: 123123123,
+            defer: true,
+            clickmap: true,
+            trackLinks: true,
+            accurateTrackBounce: true,
+          },
         },
-    }));
-})
+      },
+    }),
+  );
+});
 ```
 
 Plugin options:
@@ -373,19 +377,21 @@ Usage:
 import {createMiddleware, createLayoutPlugin} from '@gravity-ui/app-layout';
 
 const renderLayout = createRenderFunction([
-    createLayoutPlugin({manifest: 'path/to/assets-manifest.json', publicPath: '/build/'})
+  createLayoutPlugin({manifest: 'path/to/assets-manifest.json', publicPath: '/build/'}),
 ]);
 
 app.get((req, res) => {
-    res.send(renderLayout({
-        title: 'Home page'
-        pluginsOptions: {
-            layout: {
-                name: 'home',
-            },
+  res.send(
+    renderLayout({
+      title: 'Home page',
+      pluginsOptions: {
+        layout: {
+          name: 'home',
         },
-    }));
-})
+      },
+    }),
+  );
+});
 ```
 
 Plugin options:
