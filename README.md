@@ -283,18 +283,20 @@ import {createRenderFunction, createGoogleAnalyticsPlugin} from '@gravity-ui/app
 const renderLayout = createRenderFunction([createGoogleAnalyticsPlugin()]);
 
 app.get((req, res) => {
-    res.send(renderLayout({
-        title: 'Home page'
-        pluginsOptions: {
-            googleAnalytics: {
-                useBeaconTransport: true, // enables use of navigator.sendBeacon
-                counter: {
-                    id: 'some id',
-                }
-            },
+  res.send(
+    renderLayout({
+      title: 'Home page',
+      pluginsOptions: {
+        googleAnalytics: {
+          useBeaconTransport: true, // enables use of navigator.sendBeacon
+          counter: {
+            id: 'some id',
+          },
         },
-    }));
-})
+      },
+    }),
+  );
+});
 ```
 
 Plugin options:
@@ -322,21 +324,23 @@ import {createMiddleware, createYandexMetrikaPlugin} from '@gravity-ui/app-layou
 const renderLayout = createRenderFunction([createYandexMetrikaPlugin()]);
 
 app.get((req, res) => {
-    res.send(renderLayout({
-        title: 'Home page'
-        pluginsOptions: {
-            yandexMetrica: {
-                counter: {
-                    id: 123123123,
-                    defer: true,
-                    clickmap: true,
-                    trackLinks: true,
-                    accurateTrackBounce: true,
-                }
-            },
+  res.send(
+    renderLayout({
+      title: 'Home page',
+      pluginsOptions: {
+        yandexMetrica: {
+          counter: {
+            id: 123123123,
+            defer: true,
+            clickmap: true,
+            trackLinks: true,
+            accurateTrackBounce: true,
+          },
         },
-    }));
-})
+      },
+    }),
+  );
+});
 ```
 
 Plugin options:
@@ -373,19 +377,21 @@ Usage:
 import {createMiddleware, createLayoutPlugin} from '@gravity-ui/app-layout';
 
 const renderLayout = createRenderFunction([
-    createLayoutPlugin({manifest: 'path/to/assets-manifest.json', publicPath: '/build/'})
+  createLayoutPlugin({manifest: 'path/to/assets-manifest.json', publicPath: '/build/'}),
 ]);
 
 app.get((req, res) => {
-    res.send(renderLayout({
-        title: 'Home page'
-        pluginsOptions: {
-            layout: {
-                name: 'home',
-            },
+  res.send(
+    renderLayout({
+      title: 'Home page',
+      pluginsOptions: {
+        layout: {
+          name: 'home',
         },
-    }));
-})
+      },
+    }),
+  );
+});
 ```
 
 Plugin options:
