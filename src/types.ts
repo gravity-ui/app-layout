@@ -29,16 +29,14 @@ export interface Icon {
 
 export type Meta = {name: string; content: string};
 
-type DocumentDirection = 'ltr' | 'rtl';
-
 interface CommonOptions {
     title: string;
     lang?: string;
-    documentDirection?: DocumentDirection;
     isMobile?: boolean;
 }
 
 interface RenderContent {
+    htmlAttributes: Record<string, string>;
     meta: Meta[];
     links: Link[];
     scripts: Script[];

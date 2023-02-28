@@ -19,6 +19,7 @@ export function createRenderFunction<Plugins extends Plugin[]>(plugins?: Plugins
     return function render<Data>(params: RenderParams<Data, Plugins>) {
         const helpers = getRenderHelpers(params);
 
+        const htmlAttributes = {};
         const icon: Icon = {
             ...defaultIcon,
             ...params.icon,
@@ -40,13 +41,14 @@ export function createRenderFunction<Plugins extends Plugin[]>(plugins?: Plugins
             afterRoot: content.afterRoot ? [content.afterRoot] : [],
         };
 
-        const {documentDirection = 'ltr', lang, isMobile, title, pluginsOptions = {}} = params;
+        const {lang, isMobile, title, pluginsOptions = {}} = params;
         for (const plugin of plugins ?? []) {
             plugin.apply({
                 options: hasProperty(pluginsOptions, plugin.name)
                     ? pluginsOptions[plugin.name]
                     : undefined,
                 renderContent: {
+                    htmlAttributes,
                     meta,
                     links,
                     styleSheets,
@@ -55,14 +57,14 @@ export function createRenderFunction<Plugins extends Plugin[]>(plugins?: Plugins
                     inlineScripts,
                     bodyContent,
                 },
-                commonOptions: {documentDirection, title, lang, isMobile},
+                commonOptions: {title, lang, isMobile},
                 utils: helpers,
             });
         }
 
         return `
 <!DOCTYPE html>
-<html ${attrs({lang, dir: documentDirection})}>
+<html ${attrs({lang, ...htmlAttributes})}>
 <head>
     <meta charset="utf-8">
     <title>${params.title}</title>
