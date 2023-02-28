@@ -40,7 +40,7 @@ export function createRenderFunction<Plugins extends Plugin[]>(plugins?: Plugins
             afterRoot: content.afterRoot ? [content.afterRoot] : [],
         };
 
-        const {lang, isMobile, title, pluginsOptions = {}} = params;
+        const {documentDirection = 'ltr', lang, isMobile, title, pluginsOptions = {}} = params;
         for (const plugin of plugins ?? []) {
             plugin.apply({
                 options: hasProperty(pluginsOptions, plugin.name)
@@ -55,14 +55,14 @@ export function createRenderFunction<Plugins extends Plugin[]>(plugins?: Plugins
                     inlineScripts,
                     bodyContent,
                 },
-                commonOptions: {title, lang, isMobile},
+                commonOptions: {documentDirection, title, lang, isMobile},
                 utils: helpers,
             });
         }
 
         return `
 <!DOCTYPE html>
-<html ${attrs({lang})}>
+<html ${attrs({lang, dir: documentDirection})}>
 <head>
     <meta charset="utf-8">
     <title>${params.title}</title>
