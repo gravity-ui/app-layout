@@ -64,7 +64,7 @@ export function createRenderFunction<Plugins extends Plugin[]>(plugins?: Plugins
 
         return `
 <!DOCTYPE html>
-<html ${attrs({lang, ...htmlAttributes})}>
+<html ${attrs({...htmlAttributes, lang})}>
 <head>
     <meta charset="utf-8">
     <title>${params.title}</title>
