@@ -36,6 +36,7 @@ interface CommonOptions {
 }
 
 interface RenderContent {
+    htmlAttributes: Record<string, string>;
     meta: Meta[];
     links: Link[];
     scripts: Script[];

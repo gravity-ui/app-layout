@@ -19,6 +19,7 @@ export function createRenderFunction<Plugins extends Plugin[]>(plugins?: Plugins
     return function render<Data>(params: RenderParams<Data, Plugins>) {
         const helpers = getRenderHelpers(params);
 
+        const htmlAttributes = {};
         const icon: Icon = {
             ...defaultIcon,
             ...params.icon,
@@ -47,6 +48,7 @@ export function createRenderFunction<Plugins extends Plugin[]>(plugins?: Plugins
                     ? pluginsOptions[plugin.name]
                     : undefined,
                 renderContent: {
+                    htmlAttributes,
                     meta,
                     links,
                     styleSheets,
@@ -62,7 +64,7 @@ export function createRenderFunction<Plugins extends Plugin[]>(plugins?: Plugins
 
         return `
 <!DOCTYPE html>
-<html ${attrs({lang})}>
+<html ${attrs({...htmlAttributes, lang})}>
 <head>
     <meta charset="utf-8">
     <title>${params.title}</title>
