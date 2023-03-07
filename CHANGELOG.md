@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/gravity-ui/app-layout/compare/v1.1.3...v1.2.0) (2023-03-07)
+
+
+### Features
+
+* add `&lt;html&gt;` attributes override support ([#10](https://github.com/gravity-ui/app-layout/issues/10)) ([4275f73](https://github.com/gravity-ui/app-layout/commit/4275f7300a5209f24f797b9661f5377b2417decf))
+
 ## [1.1.3](https://github.com/gravity-ui/app-layout/compare/v1.1.2...v1.1.3) (2022-12-13)
 
 
