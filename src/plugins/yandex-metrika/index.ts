@@ -34,6 +34,10 @@ export function renderMetrika(params: MetrikaPluginOptions, utils: RenderHelpers
         counters = [counters];
     }
 
+    if (counters.length === 0) {
+        return '';
+    }
+
     counters = counters.map((config) => Object.assign({}, defaultCounterConfig, config || {}));
 
     if (counters.some((config) => !config.id)) {
