@@ -17,7 +17,6 @@ export function getRenderHelpers(params: {nonce?: string}): RenderHelpers {
                   defer,
                   async,
                   crossorigin: crossOrigin,
-                  nonce: params.nonce,
               })}></script>`
             : '';
     }
