@@ -14,5 +14,4 @@ module.exports = {
     transformIgnorePatterns: ['node_modules/(?!(@gravity-ui)/)'],
     coverageDirectory: './coverage',
     collectCoverageFrom: ['src/**/*.ts'],
-    passWithNoTests: true,
 };
