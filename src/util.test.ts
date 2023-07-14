@@ -25,3 +25,9 @@ test('should render `nonce` for inline styles', () => {
 
     expect(style).toEqual(expect.stringContaining('nonce="random"'));
 });
+
+test('should not render `nonce` for `<link>` tags', () => {
+    const link = helpers.renderLink({href: 'foo.js', as: 'script'});
+
+    expect(link).not.toEqual(expect.stringContaining('nonce="random"'));
+});
