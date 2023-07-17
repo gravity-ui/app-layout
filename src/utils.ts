@@ -17,7 +17,6 @@ export function getRenderHelpers(params: {nonce?: string}): RenderHelpers {
                   defer,
                   async,
                   crossorigin: crossOrigin,
-                  nonce: params.nonce,
               })}></script>`
             : '';
     }
@@ -42,7 +41,6 @@ export function getRenderHelpers(params: {nonce?: string}): RenderHelpers {
                   href,
                   crossorigin: crossOrigin,
                   as,
-                  nonce: as === 'script' ? params.nonce : undefined,
                   ...rest,
               })}>`
             : '';
