@@ -10,6 +10,8 @@ export function attrs(obj: Attributes): string {
 const OG_META_PREFIX = 'og:';
 
 export function getRenderHelpers(params: {nonce?: string}): RenderHelpers {
+    const {nonce} = params;
+
     function renderScript({src, defer, async, crossOrigin}: Script) {
         return src
             ? `<script ${attrs({
@@ -21,13 +23,13 @@ export function getRenderHelpers(params: {nonce?: string}): RenderHelpers {
             : '';
     }
     function renderInlineScript(content: string) {
-        return `<script ${attrs({nonce: params.nonce})}>${content}</script>`;
+        return `<script ${attrs({nonce})}>${content}</script>`;
     }
     function renderStyle({href}: Stylesheet) {
-        return href ? `<link ${attrs({rel: 'stylesheet', href})}>` : '';
+        return href ? `<link ${attrs({rel: 'stylesheet', nonce, href})}>` : '';
     }
     function renderInlineStyle(content: string) {
-        return `<style ${attrs({nonce: params.nonce})}>${content}</style>`;
+        return `<style ${attrs({nonce})}>${content}</style>`;
     }
     function renderMeta({name, content}: Meta) {
         return `<meta ${attrs({
