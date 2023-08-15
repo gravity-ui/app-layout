@@ -86,7 +86,7 @@ export function createRenderFunction<Plugins extends Plugin[]>(plugins?: Plugins
 <body ${attrs({class: bodyContent.className.filter(Boolean).join(' ')})}>
     ${bodyContent.beforeRoot.join('\n')}
     <div id="root">
-        ${bodyContent.root}
+        ${bodyContent.root ?? ''}
     </div>
     ${bodyContent.afterRoot.join('\n')}
 </body>
