@@ -1,7 +1,8 @@
 {
-  "extends": "./tsconfig",
+  "extends": "./tsconfig.esm",
   "compilerOptions": {
     "module": "CommonJS",
-    "outDir": "dist/commonjs"
+    "outDir": "dist/commonjs",
+    "verbatimModuleSyntax": false
   }
 }

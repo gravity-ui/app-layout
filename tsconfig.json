@@ -3,12 +3,9 @@
   "compilerOptions": {
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "importsNotUsedAsValues": "error",
+    "verbatimModuleSyntax": true,
     "noUncheckedIndexedAccess": true,
     "experimentalDecorators": false,
-    "resolveJsonModule": true,
-    "outDir": "dist/esm"
-  },
-  "include": ["src/**/*.ts"],
-  "exclude": ["**/__tests__", "**/*.test.ts"]
+    "resolveJsonModule": true
+  }
 }
