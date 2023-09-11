@@ -1,5 +1,5 @@
 import type {Plugin, RenderHelpers} from '../../types.js';
-import type {MetrikaPluginOptions} from './types.js';
+import type {MetrikaCounter, MetrikaPluginOptions} from './types.js';
 
 export type {MetrikaCounter, MetrikaPluginOptions} from './types.js';
 
@@ -16,7 +16,7 @@ export function createYandexMetrikaPlugin(): Plugin<MetrikaPluginOptions, 'yande
     };
 }
 
-const defaultCounterConfig = {
+const defaultCounterConfig: Omit<MetrikaCounter, 'id'> = {
     defer: false,
     clickmap: true,
     trackLinks: true,
@@ -34,15 +34,15 @@ export function renderMetrika(params: MetrikaPluginOptions, utils: RenderHelpers
         counters = [counters];
     }
 
+    if (counters.some((config) => !config?.id)) {
+        throw new Error('Counter id should be specified');
+    }
+
     if (counters.length === 0) {
         return '';
     }
 
-    counters = counters.map((config) => Object.assign({}, defaultCounterConfig, config || {}));
-
-    if (counters.some((config) => !config.id)) {
-        throw new Error('Counter id should be specified');
-    }
+    counters = counters.map((config) => Object.assign({}, defaultCounterConfig, config));
 
     const webvisorCount = counters.reduce((acc, config) => acc + (config.webvisor ? 1 : 0), 0);
     if (webvisorCount > 1) {
