@@ -1,6 +1,7 @@
 {
   "extends": "@gravity-ui/tsconfig",
   "compilerOptions": {
+    "noEmit": true,
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "verbatimModuleSyntax": true,
