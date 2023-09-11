@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig",
   "compilerOptions": {
+    "noEmit": false,
     "declaration": true,
     "outDir": "dist/esm"
   },
