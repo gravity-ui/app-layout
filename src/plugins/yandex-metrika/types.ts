@@ -1,15 +1,24 @@
 export interface MetrikaCounter {
     id: number;
-    defer: boolean;
-    clickmap: boolean;
-    trackLinks: boolean;
-    accurateTrackBounce: boolean | number;
+    /** @default false */
+    defer?: boolean;
+    /** @default true */
+    clickmap?: boolean;
+    /** @default true */
+    trackLinks?: boolean;
+    /** @default true */
+    accurateTrackBounce?: boolean | number;
+    /** @default false */
     webvisor?: boolean;
     nonce?: string;
     encryptedExperiments?: string;
+    /** @default false */
     triggerEvent?: boolean;
+    /** @default false */
     trackHash?: boolean;
+    /** @default false */
     ecommerce?: boolean | string;
+    /** @default 0 */
     type?: number;
 }
 
