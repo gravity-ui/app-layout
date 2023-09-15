@@ -10,11 +10,9 @@
 
 ### Bug Fixes
 
-* do not render `nonce` for regular tags ([#15](https://github.com/gravity-ui/app-layout/issues/15)) ([46c242d](https://github.com/gravity-ui/app-layout/commit/46c242d547138e175fc05c3d9613e0c3db2906d7))
 * do not render metrika for empty array ([#13](https://github.com/gravity-ui/app-layout/issues/13)) ([5d255c8](https://github.com/gravity-ui/app-layout/commit/5d255c8073ad5621dc4f9adb4072c6118d5b8f0d))
 * **metrika:** only counter id is required ([#20](https://github.com/gravity-ui/app-layout/issues/20)) ([65f4328](https://github.com/gravity-ui/app-layout/commit/65f4328fd5a13683f8a542b8b935c549202a9599))
 * render empty root content if bodyContent.root is not set ([#18](https://github.com/gravity-ui/app-layout/issues/18)) ([1db127a](https://github.com/gravity-ui/app-layout/commit/1db127a35b4116e46ded8ba909436e8644a6e128))
-* render nonce on scripts and links to scripts ([#22](https://github.com/gravity-ui/app-layout/issues/22)) ([13e9608](https://github.com/gravity-ui/app-layout/commit/13e9608a2a1eb92d4d7d69352ed625f9c47092b9))
 
 ## [1.2.0](https://github.com/gravity-ui/app-layout/compare/v1.1.3...v1.2.0) (2023-03-07)
 
