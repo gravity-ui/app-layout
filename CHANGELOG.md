@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.0](https://github.com/gravity-ui/app-layout/compare/v1.2.0...v1.3.0) (2023-09-15)
+
+
+### Features
+
+* add function to get generated content for render an HTML page ([#21](https://github.com/gravity-ui/app-layout/issues/21)) ([5e8cfa3](https://github.com/gravity-ui/app-layout/commit/5e8cfa39804bd5c7d0d35c3926d65360f075c483))
+
+
+### Bug Fixes
+
+* do not render metrika for empty array ([#13](https://github.com/gravity-ui/app-layout/issues/13)) ([5d255c8](https://github.com/gravity-ui/app-layout/commit/5d255c8073ad5621dc4f9adb4072c6118d5b8f0d))
+* **metrika:** only counter id is required ([#20](https://github.com/gravity-ui/app-layout/issues/20)) ([65f4328](https://github.com/gravity-ui/app-layout/commit/65f4328fd5a13683f8a542b8b935c549202a9599))
+* render empty root content if bodyContent.root is not set ([#18](https://github.com/gravity-ui/app-layout/issues/18)) ([1db127a](https://github.com/gravity-ui/app-layout/commit/1db127a35b4116e46ded8ba909436e8644a6e128))
+
 ## [1.2.0](https://github.com/gravity-ui/app-layout/compare/v1.1.3...v1.2.0) (2023-03-07)
 
 
