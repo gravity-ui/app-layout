@@ -35,7 +35,7 @@ interface CommonOptions {
     isMobile?: boolean;
 }
 
-interface RenderContent {
+export interface RenderContent {
     htmlAttributes: Record<string, string>;
     meta: Meta[];
     links: Link[];

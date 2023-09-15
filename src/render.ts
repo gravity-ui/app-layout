@@ -1,6 +1,6 @@
 import htmlescape from 'htmlescape';
 import {attrs, getRenderHelpers, hasProperty} from './utils.js';
-import type {Icon, Meta, RenderParams, Plugin} from './types.js';
+import type {Icon, Meta, RenderParams, Plugin, RenderContent} from './types.js';
 
 const defaultIcon: Icon = {
     type: 'image/png',
@@ -15,56 +15,95 @@ const defaultMeta: Meta[] = [
     },
 ];
 
+/**
+ * Generates the content to be rendered in an HTML page.
+ * @param plugins - An array of plugins.
+ * @param params - An object containing various parameters for rendering the content.
+ * @returns An object containing the generated content for an HTML page.
+ */
+export function generateRenderContent<Plugins extends Plugin[], Data>(
+    plugins: Plugins | undefined,
+    params: RenderParams<Data, Plugins>,
+): RenderContent {
+    const helpers = getRenderHelpers(params);
+    const htmlAttributes: Record<string, string> = {};
+    const meta = [...defaultMeta, ...(params.meta ?? [])];
+    const styleSheets = params.styleSheets || [];
+    const scripts = params.scripts || [];
+    const inlineStyleSheets = params.inlineStyleSheets || [];
+    const inlineScripts = params.inlineScripts || [];
+    const links = params.links || [];
+
+    inlineScripts.unshift(`window.__DATA__ = ${htmlescape(params.data || {})};`);
+
+    const content = params.bodyContent ?? {};
+    const bodyContent = {
+        className: content.className ? [content.className] : [],
+        root: content.root,
+        beforeRoot: content.beforeRoot ? [content.beforeRoot] : [],
+        afterRoot: content.afterRoot ? [content.afterRoot] : [],
+    };
+
+    const {lang, isMobile, title, pluginsOptions = {}} = params;
+    for (const plugin of plugins ?? []) {
+        plugin.apply({
+            options: hasProperty(pluginsOptions, plugin.name)
+                ? pluginsOptions[plugin.name]
+                : undefined,
+            renderContent: {
+                htmlAttributes,
+                meta,
+                links,
+                styleSheets,
+                scripts,
+                inlineStyleSheets,
+                inlineScripts,
+                bodyContent,
+            },
+            commonOptions: {title, lang, isMobile},
+            utils: helpers,
+        });
+    }
+
+    if (lang) {
+        htmlAttributes.lang = lang;
+    }
+
+    return {
+        htmlAttributes,
+        meta,
+        links,
+        styleSheets,
+        scripts,
+        inlineStyleSheets,
+        inlineScripts,
+        bodyContent,
+    };
+}
+
 export function createRenderFunction<Plugins extends Plugin[]>(plugins?: Plugins) {
     return function render<Data>(params: RenderParams<Data, Plugins>) {
+        const {
+            htmlAttributes,
+            meta,
+            styleSheets,
+            scripts,
+            inlineStyleSheets,
+            inlineScripts,
+            links,
+            bodyContent,
+        } = generateRenderContent(plugins, params);
+
         const helpers = getRenderHelpers(params);
 
-        const htmlAttributes = {};
         const icon: Icon = {
             ...defaultIcon,
             ...params.icon,
         };
-        const meta = [...defaultMeta, ...(params.meta ?? [])];
-        const styleSheets = params.styleSheets || [];
-        const scripts = params.scripts || [];
-        const inlineStyleSheets = params.inlineStyleSheets || [];
-        const inlineScripts = params.inlineScripts || [];
-        const links = params.links || [];
-
-        inlineScripts.unshift(`window.__DATA__ = ${htmlescape(params.data || {})};`);
-
-        const content = params.bodyContent ?? {};
-        const bodyContent = {
-            className: content.className ? [content.className] : [],
-            root: content.root,
-            beforeRoot: content.beforeRoot ? [content.beforeRoot] : [],
-            afterRoot: content.afterRoot ? [content.afterRoot] : [],
-        };
-
-        const {lang, isMobile, title, pluginsOptions = {}} = params;
-        for (const plugin of plugins ?? []) {
-            plugin.apply({
-                options: hasProperty(pluginsOptions, plugin.name)
-                    ? pluginsOptions[plugin.name]
-                    : undefined,
-                renderContent: {
-                    htmlAttributes,
-                    meta,
-                    links,
-                    styleSheets,
-                    scripts,
-                    inlineStyleSheets,
-                    inlineScripts,
-                    bodyContent,
-                },
-                commonOptions: {title, lang, isMobile},
-                utils: helpers,
-            });
-        }
 
         return `
 <!DOCTYPE html>
-<html ${attrs({...htmlAttributes, lang})}>
+<html ${attrs({...htmlAttributes})}>
 <head>
     <meta charset="utf-8">
     <title>${params.title}</title>
