@@ -1,4 +1,4 @@
-export {createRenderFunction} from './render.js';
+export {createRenderFunction, generateRenderContent} from './render.js';
 export {
     createGoogleAnalyticsPlugin,
     createYandexMetrikaPlugin,
