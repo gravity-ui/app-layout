@@ -1,6 +1,6 @@
 import htmlescape from 'htmlescape';
 import {attrs, getRenderHelpers, hasProperty} from './utils.js';
-import type {Icon, Meta, RenderParams, Plugin, RenderContent} from './types.js';
+import type {Icon, Meta, RenderParams, Plugin, RenderContent, Attributes} from './types.js';
 
 const defaultIcon: Icon = {
     type: 'image/png',
@@ -26,7 +26,7 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
     params: RenderParams<Data, Plugins>,
 ): RenderContent {
     const helpers = getRenderHelpers(params);
-    const htmlAttributes: Record<string, string> = {};
+    const htmlAttributes: Attributes = {...params.htmlAttributes};
     const meta = [...defaultMeta, ...(params.meta ?? [])];
     const styleSheets = params.styleSheets || [];
     const scripts = params.scripts || [];
@@ -42,6 +42,12 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
         root: content.root,
         beforeRoot: content.beforeRoot ? [content.beforeRoot] : [],
         afterRoot: content.afterRoot ? [content.afterRoot] : [],
+    };
+    const body = params.body;
+    const bodyClassName = bodyContent.className.filter(Boolean).join(' ');
+    const bodyAttributes = {
+        class: bodyClassName ? bodyClassName : undefined,
+        ...params.bodyAttributes,
     };
 
     const {lang, isMobile, title, pluginsOptions = {}} = params;
@@ -59,6 +65,8 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
                 inlineStyleSheets,
                 inlineScripts,
                 bodyContent,
+                body,
+                bodyAttributes,
             },
             commonOptions: {title, lang, isMobile},
             utils: helpers,
@@ -78,6 +86,8 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
         inlineStyleSheets,
         inlineScripts,
         bodyContent,
+        body,
+        bodyAttributes,
     };
 }
 
@@ -92,6 +102,8 @@ export function createRenderFunction<Plugins extends Plugin[]>(plugins?: Plugins
             inlineScripts,
             links,
             bodyContent,
+            body,
+            bodyAttributes,
         } = generateRenderContent(plugins, params);
 
         const helpers = getRenderHelpers(params);
@@ -100,6 +112,14 @@ export function createRenderFunction<Plugins extends Plugin[]>(plugins?: Plugins
             ...defaultIcon,
             ...params.icon,
         };
+
+        const bodyHtml = body
+            ? body
+            : [
+                  bodyContent.beforeRoot.join('\n'),
+                  `<div id="root">${bodyContent.root ?? ''}</div>`,
+                  bodyContent.afterRoot.join('\n'),
+              ].join('\n');
 
         return `
 <!DOCTYPE html>
@@ -122,12 +142,8 @@ export function createRenderFunction<Plugins extends Plugin[]>(plugins?: Plugins
         .filter(Boolean)
         .join('\n')}
 </head>
-<body ${attrs({class: bodyContent.className.filter(Boolean).join(' ')})}>
-    ${bodyContent.beforeRoot.join('\n')}
-    <div id="root">
-        ${bodyContent.root ?? ''}
-    </div>
-    ${bodyContent.afterRoot.join('\n')}
+<body ${attrs({...bodyAttributes})}>
+${bodyHtml}
 </body>
 </html>
     `.trim();

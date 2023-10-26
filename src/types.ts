@@ -36,19 +36,24 @@ interface CommonOptions {
 }
 
 export interface RenderContent {
-    htmlAttributes: Record<string, string>;
+    htmlAttributes: Attributes;
     meta: Meta[];
     links: Link[];
     scripts: Script[];
     styleSheets: Stylesheet[];
     inlineScripts: string[];
     inlineStyleSheets: string[];
+    /**
+     * @deprecated
+     */
     bodyContent: {
         className: string[];
         beforeRoot: string[];
         root?: string;
         afterRoot: string[];
     };
+    body?: string;
+    bodyAttributes: Attributes;
 }
 
 export interface RenderHelpers {
@@ -73,18 +78,24 @@ export interface RenderParams<Data, Plugins extends Plugin[] = []> extends Commo
     icon?: Icon;
     nonce?: string;
     // content
+    htmlAttributes?: Attributes;
     meta?: Meta[];
     links?: Link[];
     scripts?: Script[];
     styleSheets?: Stylesheet[];
     inlineScripts?: string[];
     inlineStyleSheets?: string[];
+    /**
+     * @deprecated
+     */
     bodyContent?: {
         className?: string;
         beforeRoot?: string;
         root?: string;
         afterRoot?: string;
     };
+    body?: string;
+    bodyAttributes?: Attributes;
     // plugins options
     pluginsOptions?: Partial<PluginsOptions<Plugins>>;
 }
