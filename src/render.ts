@@ -123,11 +123,11 @@ export function createRenderFunction<Plugins extends Plugin[]>(plugins?: Plugins
 
         return `
 <!DOCTYPE html>
-<html ${attrs({...htmlAttributes})}>
+<html${attrs({...htmlAttributes})}>
 <head>
     <meta charset="utf-8">
     <title>${params.title}</title>
-    <link ${attrs({rel: 'icon', type: icon.type, sizes: icon.sizes, href: icon.href})}>
+    <link${attrs({rel: 'icon', type: icon.type, sizes: icon.sizes, href: icon.href})}>
     ${[
         ...scripts.map(({src, crossOrigin}) =>
             helpers.renderLink({href: src, crossOrigin, rel: 'preload', as: 'script'}),
@@ -142,7 +142,7 @@ export function createRenderFunction<Plugins extends Plugin[]>(plugins?: Plugins
         .filter(Boolean)
         .join('\n')}
 </head>
-<body ${attrs({...bodyAttributes})}>
+<body${attrs({...bodyAttributes})}>
 ${bodyHtml}
 </body>
 </html>

@@ -3,8 +3,8 @@ import type {Attributes, Link, Meta, Script, Stylesheet, RenderHelpers} from './
 export function attrs(obj: Attributes): string {
     return Object.entries(obj)
         .filter(([, value]) => value !== undefined)
-        .map(([name, value]) => `${name}="${value}"`)
-        .join(' ');
+        .map(([name, value]) => ` ${name}="${value}"`)
+        .join('');
 }
 
 const OG_META_PREFIX = 'og:';
@@ -12,7 +12,7 @@ const OG_META_PREFIX = 'og:';
 export function getRenderHelpers(params: {nonce?: string}): RenderHelpers {
     function renderScript({src, defer, async, crossOrigin}: Script) {
         return src
-            ? `<script ${attrs({
+            ? `<script${attrs({
                   src,
                   defer,
                   async,
@@ -22,23 +22,23 @@ export function getRenderHelpers(params: {nonce?: string}): RenderHelpers {
             : '';
     }
     function renderInlineScript(content: string) {
-        return `<script ${attrs({nonce: params.nonce})}>${content}</script>`;
+        return `<script${attrs({nonce: params.nonce})}>${content}</script>`;
     }
     function renderStyle({href}: Stylesheet) {
-        return href ? `<link ${attrs({rel: 'stylesheet', href})}>` : '';
+        return href ? `<link${attrs({rel: 'stylesheet', href})}>` : '';
     }
     function renderInlineStyle(content: string) {
-        return `<style ${attrs({nonce: params.nonce})}>${content}</style>`;
+        return `<style${attrs({nonce: params.nonce})}>${content}</style>`;
     }
     function renderMeta({name, content}: Meta) {
-        return `<meta ${attrs({
+        return `<meta${attrs({
             [name.startsWith(OG_META_PREFIX) ? 'property' : 'name']: name,
             content,
         })}>`;
     }
     function renderLink({href, crossOrigin, as, ...rest}: Link) {
         return href
-            ? `<link ${attrs({
+            ? `<link${attrs({
                   href,
                   crossorigin: crossOrigin,
                   as,

@@ -11,12 +11,12 @@ function dirPlugin(): Plugin<void> {
 }
 
 test('should allow `<html>` attributes override', () => {
-    expect(createRenderFunction()({title: 'Foobar'})).toMatch('<html >');
+    expect(createRenderFunction()({title: 'Foobar'})).toMatch('<html>');
     expect(createRenderFunction([dirPlugin()])({title: 'Foobar'})).toMatch('<html dir="ltr">');
 });
 
 test('should allow `<body>` attributes override', () => {
-    expect(createRenderFunction()({title: 'Foobar'})).toMatch('<body >');
+    expect(createRenderFunction()({title: 'Foobar'})).toMatch('<body>');
     expect(createRenderFunction()({title: 'Foobar', bodyAttributes: {dir: 'ltr'}})).toMatch(
         '<body dir="ltr">',
     );
