@@ -346,6 +346,10 @@ app.get((req, res) => {
 Plugin options:
 
 ```typescript
+export type UserParams = {
+  [x: string]: boolean | string | number | null | UserParams;
+};
+
 export interface MetrikaCounter {
   id: number;
   defer: boolean;
@@ -359,9 +363,7 @@ export interface MetrikaCounter {
   trackHash?: boolean;
   ecommerce?: boolean | string;
   type?: number;
-  userParams?: {
-    [x: string]: boolean | string | number;
-  };
+  userParams?: UserParams;
 }
 
 export type MetrikaOptions = {

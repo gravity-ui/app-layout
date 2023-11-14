@@ -1,4 +1,4 @@
-type UserParams = {
+export type UserParams = {
     [x: string]: boolean | string | number | null | UserParams;
 };
 
