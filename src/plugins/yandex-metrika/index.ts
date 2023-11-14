@@ -73,7 +73,7 @@ export function renderMetrika(params: MetrikaPluginOptions, utils: RenderHelpers
                     ecommerce: ${config.ecommerce},
                     type: ${Number(config.type)},
                     experiments: "${config.encryptedExperiments || ''}"
-                    userParams: "${config?.userParams || {}}"
+                    userParams: ${JSON.stringify(config?.userParams || {})}
                 });
             `,
                 )
