@@ -20,6 +20,10 @@ export interface MetrikaCounter {
     ecommerce?: boolean | string;
     /** @default 0 */
     type?: number;
+    /** @default {} */
+    userParams?: {
+        [x: string]: boolean | string | number;
+    };
 }
 
 export type MetrikaPluginOptions = {
