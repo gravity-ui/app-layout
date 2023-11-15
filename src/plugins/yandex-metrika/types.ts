@@ -1,3 +1,7 @@
+export type UserParams = {
+    [x: string]: boolean | string | number | null | UserParams;
+};
+
 export interface MetrikaCounter {
     id: number;
     /** @default false */
@@ -20,6 +24,8 @@ export interface MetrikaCounter {
     ecommerce?: boolean | string;
     /** @default 0 */
     type?: number;
+    /** @default {} */
+    userParams?: UserParams;
 }
 
 export type MetrikaPluginOptions = {

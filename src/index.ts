@@ -18,7 +18,11 @@ export type {
     RenderParams,
 } from './types.js';
 
-export type {MetrikaCounter, MetrikaPluginOptions} from './plugins/yandex-metrika/index.js';
+export type {
+    MetrikaCounter,
+    MetrikaPluginOptions,
+    UserParams,
+} from './plugins/yandex-metrika/index.js';
 export type {
     GoogleAnalyticsCounter,
     GoogleAnalyticsPluginOptions,

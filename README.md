@@ -328,7 +328,7 @@ app.get((req, res) => {
     renderLayout({
       title: 'Home page',
       pluginsOptions: {
-        yandexMetrica: {
+        yandexMetrika: {
           counter: {
             id: 123123123,
             defer: true,
@@ -346,6 +346,10 @@ app.get((req, res) => {
 Plugin options:
 
 ```typescript
+export type UserParams = {
+  [x: string]: boolean | string | number | null | UserParams;
+};
+
 export interface MetrikaCounter {
   id: number;
   defer: boolean;
@@ -359,6 +363,7 @@ export interface MetrikaCounter {
   trackHash?: boolean;
   ecommerce?: boolean | string;
   type?: number;
+  userParams?: UserParams;
 }
 
 export type MetrikaOptions = {

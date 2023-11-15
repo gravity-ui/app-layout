@@ -1,7 +1,7 @@
 import type {Plugin, RenderHelpers} from '../../types.js';
 import type {MetrikaCounter, MetrikaPluginOptions} from './types.js';
 
-export type {MetrikaCounter, MetrikaPluginOptions} from './types.js';
+export type {MetrikaCounter, MetrikaPluginOptions, UserParams} from './types.js';
 
 export function createYandexMetrikaPlugin(): Plugin<MetrikaPluginOptions, 'yandexMetrika'> {
     return {
@@ -73,6 +73,7 @@ export function renderMetrika(params: MetrikaPluginOptions, utils: RenderHelpers
                     ecommerce: ${config.ecommerce},
                     type: ${Number(config.type)},
                     experiments: "${config.encryptedExperiments || ''}"
+                    userParams: ${JSON.stringify(config.userParams || {})}
                 });
             `,
                 )
