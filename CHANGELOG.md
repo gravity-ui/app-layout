@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/gravity-ui/app-layout/compare/v1.3.0...v1.4.0) (2023-11-15)
+
+
+### Features
+
+* add userParams prop in yaMetrika init ([#24](https://github.com/gravity-ui/app-layout/issues/24)) ([be125b1](https://github.com/gravity-ui/app-layout/commit/be125b1453b0855f745de68ae548753c6b338ee0))
+
 ## [1.3.0](https://github.com/gravity-ui/app-layout/compare/v1.2.0...v1.3.0) (2023-09-15)
 
 
