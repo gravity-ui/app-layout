@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/gravity-ui/app-layout/compare/v1.4.0...v1.4.1) (2023-11-23)
+
+
+### Bug Fixes
+
+* SyntaxError: Unexpected identifier 'userParams' ([#26](https://github.com/gravity-ui/app-layout/issues/26)) ([d6234a9](https://github.com/gravity-ui/app-layout/commit/d6234a9cc79de67a12678b4fd2c209f2ca0f36b6))
+
 ## [1.4.0](https://github.com/gravity-ui/app-layout/compare/v1.3.0...v1.4.0) (2023-11-15)
 
 
