@@ -72,7 +72,7 @@ export function renderMetrika(params: MetrikaPluginOptions, utils: RenderHelpers
                     trackHash: ${Boolean(config.trackHash)},
                     ecommerce: ${config.ecommerce},
                     type: ${Number(config.type)},
-                    experiments: "${config.encryptedExperiments || ''}"
+                    experiments: "${config.encryptedExperiments || ''}",
                     userParams: ${JSON.stringify(config.userParams || {})}
                 });
             `,
