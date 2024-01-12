@@ -67,6 +67,8 @@ interface RenderParams<Data, Plugins> {
 
   // content of body tag
   bodyContent?: {
+    // initial application theme if @gravity-ui/uikit is used
+    theme?: string;
     // class name for body tag
     className?: string;
     // body content before div tag with id root
@@ -252,6 +254,7 @@ interface RenderContent {
   inlineScripts: string[];
   inlineStyleSheets: string[];
   bodyContent: {
+    theme?: string;
     className: string[];
     beforeRoot: string[];
     root?: string;
