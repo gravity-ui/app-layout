@@ -2,6 +2,17 @@ import htmlescape from 'htmlescape';
 import {attrs, getRenderHelpers, hasProperty} from './utils.js';
 import type {Icon, Meta, RenderParams, Plugin, RenderContent} from './types.js';
 
+function getRootClassName(theme?: string) {
+    if (!theme) {
+        return [];
+    }
+    const classes = ['g-root'];
+    if (theme) {
+        classes.push(`g-root_theme_${theme}`);
+    }
+    return classes;
+}
+
 const defaultIcon: Icon = {
     type: 'image/png',
     sizes: '16x16',
@@ -37,8 +48,12 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
     inlineScripts.unshift(`window.__DATA__ = ${htmlescape(params.data || {})};`);
 
     const content = params.bodyContent ?? {};
+    const {theme, className} = content;
+    const bodyClasses = Array.from(
+        new Set([...getRootClassName(theme), ...(className ? className.split(' ') : [])]),
+    );
     const bodyContent = {
-        className: content.className ? [content.className] : [],
+        className: bodyClasses,
         root: content.root,
         beforeRoot: content.beforeRoot ? [content.beforeRoot] : [],
         afterRoot: content.afterRoot ? [content.afterRoot] : [],
