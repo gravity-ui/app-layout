@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/gravity-ui/app-layout/compare/v1.4.1...v1.5.0) (2024-01-12)
+
+
+### Features
+
+* calculate initial body classes in @gravity-ui/uikit notation if… ([#28](https://github.com/gravity-ui/app-layout/issues/28)) ([4e3f89f](https://github.com/gravity-ui/app-layout/commit/4e3f89fd6fbf2c0a1266b83e99f676fae6f3c180))
+
 ## [1.4.1](https://github.com/gravity-ui/app-layout/compare/v1.4.0...v1.4.1) (2023-11-23)
 
 
