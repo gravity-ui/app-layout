@@ -1,5 +1,5 @@
-import type {Plugin} from './types.js';
 import {createRenderFunction} from './render.js';
+import type {Plugin} from './types.js';
 
 function dirPlugin(): Plugin<void> {
     return {

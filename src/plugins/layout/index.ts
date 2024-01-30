@@ -1,8 +1,9 @@
 import htmlescape from 'htmlescape';
-import {getAbsoluteUrl, getJSONContent} from './helpers.js';
 
 import type {Plugin} from '../../types.js';
-import type {Manifest, LayoutPluginOptions} from './types.js';
+
+import {getAbsoluteUrl, getJSONContent} from './helpers.js';
+import type {LayoutPluginOptions, Manifest} from './types.js';
 
 export type {LayoutPluginOptions} from './types.js';
 
