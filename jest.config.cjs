@@ -10,7 +10,6 @@ module.exports = {
     moduleNameMapper: {
         '^(\\.{1,2}/.*)\\.js$': '$1',
     },
-    transformIgnorePatterns: ['node_modules/(?!(@gravity-ui)/)'],
     coverageDirectory: './coverage',
     collectCoverageFrom: ['src/**/*.ts'],
 };

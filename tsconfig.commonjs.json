@@ -2,7 +2,7 @@
   "extends": "./tsconfig.esm",
   "compilerOptions": {
     "module": "CommonJS",
-    "moduleResolution": "node",
+    "moduleResolution": "node10",
     "outDir": "dist/commonjs",
     "verbatimModuleSyntax": false
   }

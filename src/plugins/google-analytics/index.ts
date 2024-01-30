@@ -1,5 +1,6 @@
-import type {GoogleAnalyticsPluginOptions} from './types.js';
 import type {Plugin, RenderHelpers} from '../../types.js';
+
+import type {GoogleAnalyticsPluginOptions} from './types.js';
 
 export type {GoogleAnalyticsCounter, GoogleAnalyticsPluginOptions} from './types.js';
 
