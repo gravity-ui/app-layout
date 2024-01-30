@@ -10,7 +10,7 @@ export function attrs(obj: Attributes): string {
 const OG_META_PREFIX = 'og:';
 
 export function getRenderHelpers(params: {nonce?: string}): RenderHelpers {
-    function renderScript({src, defer, async, crossOrigin}: Script) {
+    function renderScript({src, defer, async, crossOrigin, type}: Script) {
         return src
             ? `<script ${attrs({
                   src,
@@ -18,6 +18,7 @@ export function getRenderHelpers(params: {nonce?: string}): RenderHelpers {
                   async,
                   crossorigin: crossOrigin,
                   nonce: params.nonce,
+                  type,
               })}></script>`
             : '';
     }

@@ -177,6 +177,7 @@ interface Script {
   defer?: boolean;
   async?: boolean;
   crossOrigin?: '' | 'anonymous' | 'use-credentials';
+  type?: 'importmap' | 'module' | string;
 }
 ```
 
