@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/gravity-ui/app-layout/compare/v1.5.0...v1.6.0) (2024-01-30)
+
+
+### Features
+
+* add type attribute to renderScript helper ([#30](https://github.com/gravity-ui/app-layout/issues/30)) ([18b0bd2](https://github.com/gravity-ui/app-layout/commit/18b0bd20013899cd67ea1bfeb1d06929b40939e8))
+
 ## [1.5.0](https://github.com/gravity-ui/app-layout/compare/v1.4.1...v1.5.0) (2024-01-12)
 
 
