@@ -1,4 +1,4 @@
-import type {Attributes, Link, Meta, Script, Stylesheet, RenderHelpers} from './types.js';
+import type {Attributes, Link, Meta, RenderHelpers, Script, Stylesheet} from './types.js';
 
 export function attrs(obj: Attributes): string {
     return Object.entries(obj)

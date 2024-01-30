@@ -7,6 +7,6 @@
     "verbatimModuleSyntax": true,
     "noUncheckedIndexedAccess": true,
     "experimentalDecorators": false,
-    "resolveJsonModule": true
-  }
+    "resolveJsonModule": true,
+  },
 }

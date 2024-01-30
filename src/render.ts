@@ -1,6 +1,7 @@
 import htmlescape from 'htmlescape';
+
+import type {Icon, Meta, Plugin, RenderContent, RenderParams} from './types.js';
 import {attrs, getRenderHelpers, hasProperty} from './utils.js';
-import type {Icon, Meta, RenderParams, Plugin, RenderContent} from './types.js';
 
 function getRootClassName(theme?: string) {
     if (!theme) {

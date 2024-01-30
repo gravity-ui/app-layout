@@ -1,6 +1,8 @@
 {
   "extends": "./tsconfig",
   "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "Node10",
     "verbatimModuleSyntax": false
   }
 }

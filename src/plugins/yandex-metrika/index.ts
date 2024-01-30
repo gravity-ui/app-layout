@@ -1,4 +1,5 @@
 import type {Plugin, RenderHelpers} from '../../types.js';
+
 import type {MetrikaCounter, MetrikaPluginOptions} from './types.js';
 
 export type {MetrikaCounter, MetrikaPluginOptions, UserParams} from './types.js';
