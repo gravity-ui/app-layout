@@ -30,7 +30,7 @@ export interface Icon {
 
 export type Meta = {name: string; content: string};
 
-interface CommonOptions {
+export interface CommonOptions {
     title: string;
     lang?: string;
     isMobile?: boolean;
