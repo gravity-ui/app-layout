@@ -1,6 +1,6 @@
 import htmlescape from 'htmlescape';
 
-import type {Plugin} from '../../types.js';
+import type {CommonOptions, Plugin} from '../../types.js';
 
 import {getAbsoluteUrl, getJSONContent} from './helpers.js';
 import type {LayoutPluginOptions, Manifest} from './types.js';
@@ -9,7 +9,7 @@ export type {LayoutPluginOptions} from './types.js';
 
 export interface LayoutInitOptions {
     publicPath?: string;
-    manifest: string;
+    manifest: string | ((commonOptions: CommonOptions) => string);
 }
 export function createLayoutPlugin({
     publicPath = '/build/',
@@ -17,12 +17,14 @@ export function createLayoutPlugin({
 }: LayoutInitOptions): Plugin<LayoutPluginOptions, 'layout'> {
     return {
         name: 'layout',
-        apply({options, renderContent}) {
+        apply({options, renderContent, commonOptions}) {
             if (!options) {
                 return;
             }
 
-            const manifestFile: Manifest = getJSONContent(manifest, (err) => {
+            const manifestPath = typeof manifest === 'string' ? manifest : manifest(commonOptions);
+
+            const manifestFile: Manifest = getJSONContent(manifestPath, (err) => {
                 console.error('Unable to read manifest file', err);
                 process.exit(1);
             });
