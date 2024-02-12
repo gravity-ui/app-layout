@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/gravity-ui/app-layout/compare/v1.6.0...v1.7.0) (2024-02-12)
+
+
+### Features
+
+* dynamic manifest path in layout plugin ([#33](https://github.com/gravity-ui/app-layout/issues/33)) ([f3c5b97](https://github.com/gravity-ui/app-layout/commit/f3c5b97893147c5fa7a6a1b47189f54dd65d2391))
+
 ## [1.6.0](https://github.com/gravity-ui/app-layout/compare/v1.5.0...v1.6.0) (2024-01-30)
 
 
