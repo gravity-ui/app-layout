@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.1](https://github.com/gravity-ui/app-layout/compare/v1.7.0...v1.7.1) (2024-02-27)
+
+
+### Bug Fixes
+
+* overriding existing default meta ([#36](https://github.com/gravity-ui/app-layout/issues/36)) ([e68011e](https://github.com/gravity-ui/app-layout/commit/e68011eac80d9bbd023382593ba04e4aa4305c2d))
+
 ## [1.7.0](https://github.com/gravity-ui/app-layout/compare/v1.6.0...v1.7.0) (2024-02-12)
 
 
