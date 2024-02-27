@@ -39,7 +39,13 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
 ): RenderContent {
     const helpers = getRenderHelpers(params);
     const htmlAttributes: Record<string, string> = {};
-    const meta = [...defaultMeta, ...(params.meta ?? [])];
+    const meta = params.meta ?? [];
+    // in terms of sets: meta = params.meta ∪ (defaultMeta ∖ params.meta)
+    defaultMeta.forEach((defaultMetaItem) => {
+        if (!meta.find(({name}) => name === defaultMetaItem.name)) {
+            meta.push(defaultMetaItem);
+        }
+    });
     const styleSheets = params.styleSheets || [];
     const scripts = params.scripts || [];
     const inlineStyleSheets = params.inlineStyleSheets || [];
