@@ -56,6 +56,7 @@ export function getRenderHelpers(params: {nonce?: string}): RenderHelpers {
         renderInlineStyle,
         renderMeta,
         renderLink,
+        attrs,
     };
 }
 

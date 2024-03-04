@@ -36,6 +36,14 @@ export interface CommonOptions {
     isMobile?: boolean;
 }
 
+export interface BodyContent {
+    attributes: Record<string, string>;
+    className: string[];
+    beforeRoot: string[];
+    root?: string;
+    afterRoot: string[];
+}
+
 export interface RenderContent {
     htmlAttributes: Record<string, string>;
     meta: Meta[];
@@ -44,12 +52,10 @@ export interface RenderContent {
     styleSheets: Stylesheet[];
     inlineScripts: string[];
     inlineStyleSheets: string[];
-    bodyContent: {
-        className: string[];
-        beforeRoot: string[];
-        root?: string;
-        afterRoot: string[];
-    };
+    bodyContent: BodyContent;
+    helpers: RenderHelpers;
+    icon: Icon;
+    title: string;
 }
 
 export interface RenderHelpers {
@@ -59,6 +65,7 @@ export interface RenderHelpers {
     renderInlineStyle(content: string): string;
     renderMeta(meta: Meta): string;
     renderLink(link: Link): string;
+    attrs(obj: Attributes): string;
 }
 export interface Plugin<Options = any, Name extends string = string> {
     name: Name;
@@ -71,6 +78,7 @@ export interface Plugin<Options = any, Name extends string = string> {
 }
 export interface RenderParams<Data, Plugins extends Plugin[] = []> extends CommonOptions {
     data?: Data;
+    skipRenderDataScript?: boolean;
     icon?: Icon;
     nonce?: string;
     // content

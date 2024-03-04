@@ -438,3 +438,52 @@ app.get((req, res) => {
     }));
 })
 ```
+
+## Alternative usage
+
+With parts renderers `generateRenderContent`, `renderHeadContent`, `renderBodyContent` via html streaming:
+
+```js
+import express from 'express';
+import {createRenderFunction} from '@gravity-ui/app-layout';
+
+const app = express();
+
+const renderLayout = createRenderFunction();
+
+app.get('/', async function (req, res) {
+  res.writeHead(200, {
+    'Content-Type': 'text/html',
+    'Transfer-Encoding': 'chunked',
+  });
+
+  const content = generateRenderContent(plugins, {
+    title: 'Home page',
+  });
+
+  const {htmlAttributes, helpers, bodyContent} = content;
+
+  res.write(`
+        <!DOCTYPE html>
+        <html ${helpers.attrs({...htmlAttributes})}>
+        <head>
+            ${renderHeadContent(content)}
+        </head>
+        <body ${helpers.attrs({...bodyContent.attributes})}>
+            ${renderBodyContent(content)}
+    `);
+
+  const data = await getUserData();
+
+  res.write(`
+            ${content.renderHelpers.renderInlineScript(`
+                window.__DATA__ = ${htmlescape(data)};
+            `)}
+        </body>
+        </html>
+    `);
+  res.end();
+});
+
+app.listen(3000);
+```
