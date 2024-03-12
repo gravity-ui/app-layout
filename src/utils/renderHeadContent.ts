@@ -1,22 +1,12 @@
-import type {RenderContent} from '../types.js';
+import type {HeadContent} from '../types.js';
 
-export function renderHeadContent(content: RenderContent): string {
-    const {
-        icon,
-        scripts,
-        helpers,
-        links,
-        meta,
-        styleSheets,
-        inlineStyleSheets,
-        inlineScripts,
-        title,
-    } = content;
+export function renderHeadContent(content: HeadContent): string {
+    const {scripts, helpers, links, meta, styleSheets, inlineStyleSheets, inlineScripts, title} =
+        content;
 
     return `
         <meta charset="utf-8">
         <title>${title}</title>
-        <link ${helpers.attrs({rel: 'icon', type: icon.type, sizes: icon.sizes, href: icon.href})}>
         ${[
             ...scripts.map(({src, crossOrigin}) =>
                 helpers.renderLink({href: src, crossOrigin, rel: 'preload', as: 'script'}),

@@ -1,13 +1,11 @@
-import type {RenderContent} from '../types.js';
+import type {BodyContent} from '../types.js';
 
-export function renderBodyContent(content: RenderContent): string {
-    const {bodyContent} = content;
-
+export function renderBodyContent(content: BodyContent): string {
     return `
-        ${bodyContent.beforeRoot.join('\n')}
+        ${content.beforeRoot.join('\n')}
         <div id="root">
-            ${bodyContent.root ?? ''}
+            ${content.root ?? ''}
         </div>
-        ${bodyContent.afterRoot.join('\n')}
+        ${content.afterRoot.join('\n')}
     `.trim();
 }

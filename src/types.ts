@@ -17,6 +17,7 @@ export interface Link {
     href: string;
     rel?: string;
     type?: string;
+    sizes?: string;
     title?: HTMLLinkElement['title'];
     crossOrigin?: '' | 'anonymous' | 'use-credentials';
     hreflang?: HTMLLinkElement['hreflang'];
@@ -36,26 +37,27 @@ export interface CommonOptions {
     isMobile?: boolean;
 }
 
+export interface HeadContent {
+    scripts: Script[];
+    helpers: RenderHelpers;
+    links: Link[];
+    meta: Meta[];
+    styleSheets: Stylesheet[];
+    inlineStyleSheets: string[];
+    inlineScripts: string[];
+    title: string;
+}
+
 export interface BodyContent {
-    attributes: Record<string, string>;
     className: string[];
     beforeRoot: string[];
     root?: string;
     afterRoot: string[];
 }
 
-export interface RenderContent {
-    htmlAttributes: Record<string, string>;
-    meta: Meta[];
-    links: Link[];
-    scripts: Script[];
-    styleSheets: Stylesheet[];
-    inlineScripts: string[];
-    inlineStyleSheets: string[];
+export interface RenderContent extends HeadContent {
+    htmlAttributes: Attributes;
     bodyContent: BodyContent;
-    helpers: RenderHelpers;
-    icon: Icon;
-    title: string;
 }
 
 export interface RenderHelpers {
@@ -73,12 +75,12 @@ export interface Plugin<Options = any, Name extends string = string> {
         options: Options | undefined;
         renderContent: RenderContent;
         commonOptions: CommonOptions;
+        /** @deprecated use `renderContent.helpers` instead */
         utils: RenderHelpers;
     }) => void;
 }
 export interface RenderParams<Data, Plugins extends Plugin[] = []> extends CommonOptions {
     data?: Data;
-    skipRenderDataScript?: boolean;
     icon?: Icon;
     nonce?: string;
     // content

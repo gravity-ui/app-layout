@@ -144,6 +144,7 @@ interface Link {
   href: string;
   rel?: string;
   type?: string;
+  sizes?: string;
   title?: HTMLLinkElement['title'];
   crossOrigin?: '' | 'anonymous' | 'use-credentials';
 }
@@ -236,6 +237,7 @@ interface Plugin<Options = any, Name = string> {
     options: Options | undefined; // passed through `renderLayout` function in `pluginsOptions` parameter.
     commonOptions: CommonOptions;
     renderContent: RenderContent;
+    /** @deprecated use `renderContent.helpers` instead */
     utils: RenderHelpers;
   }) => void;
 }
@@ -247,20 +249,27 @@ interface CommonOptions {
   isMobile?: boolean;
 }
 
-interface RenderContent {
-  meta: Meta[];
-  links: Link[];
+export interface HeadContent {
   scripts: Script[];
+  helpers: RenderHelpers;
+  links: Link[];
+  meta: Meta[];
   styleSheets: Stylesheet[];
-  inlineScripts: string[];
   inlineStyleSheets: string[];
-  bodyContent: {
-    theme?: string;
-    className: string[];
-    beforeRoot: string[];
-    root?: string;
-    afterRoot: string[];
-  };
+  inlineScripts: string[];
+  title: string;
+}
+
+export interface BodyContent {
+  className: string[];
+  beforeRoot: string[];
+  root?: string;
+  afterRoot: string[];
+}
+
+export interface RenderContent extends HeadContent {
+  htmlAttributes: Attributes;
+  bodyContent: BodyContent;
 }
 
 export interface RenderHelpers {
@@ -270,6 +279,7 @@ export interface RenderHelpers {
   renderInlineStyle(content: string): string;
   renderMeta(meta: Meta): string;
   renderLink(link: Link): string;
+  attrs(obj: Attributes): string;
 }
 ```
 
@@ -445,11 +455,15 @@ With parts renderers `generateRenderContent`, `renderHeadContent`, `renderBodyCo
 
 ```js
 import express from 'express';
-import {createRenderFunction} from '@gravity-ui/app-layout';
+import htmlescape from 'htmlescape';
+import {
+  generateRenderContent,
+  renderHeadContent,
+  renderBodyContent,
+  createDefaultPlugins,
+} from '@gravity-ui/app-layout';
 
 const app = express();
-
-const renderLayout = createRenderFunction();
 
 app.get('/', async function (req, res) {
   res.writeHead(200, {
@@ -457,11 +471,17 @@ app.get('/', async function (req, res) {
     'Transfer-Encoding': 'chunked',
   });
 
+  const plugins = createDefaultPlugins({layout: {manifest: 'path/to/assets-manifest.json'}});
+
   const content = generateRenderContent(plugins, {
     title: 'Home page',
   });
 
   const {htmlAttributes, helpers, bodyContent} = content;
+
+  const bodyAttributes = {
+    class: bodyContent.className.filter(Boolean).join(' '),
+  };
 
   res.write(`
         <!DOCTYPE html>
@@ -469,7 +489,7 @@ app.get('/', async function (req, res) {
         <head>
             ${renderHeadContent(content)}
         </head>
-        <body ${helpers.attrs({...bodyContent.attributes})}>
+        <body ${helpers.attrs(bodyAttributes)}>
             ${renderBodyContent(content)}
     `);
 

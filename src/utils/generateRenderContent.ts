@@ -52,9 +52,7 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
     const inlineScripts = params.inlineScripts || [];
     const links = params.links || [];
 
-    if (!params.skipRenderDataScript) {
-        inlineScripts.unshift(`window.__DATA__ = ${htmlescape(params.data || {})};`);
-    }
+    inlineScripts.unshift(`window.__DATA__ = ${htmlescape(params.data || {})};`);
 
     const content = params.bodyContent ?? {};
     const {theme, className} = content;
@@ -62,9 +60,6 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
         new Set([...getRootClassName(theme), ...(className ? className.split(' ') : [])]),
     );
     const bodyContent: BodyContent = {
-        attributes: {
-            class: bodyClasses.filter(Boolean).join(' '),
-        },
         className: bodyClasses,
         root: content.root,
         beforeRoot: content.beforeRoot ? [content.beforeRoot] : [],
@@ -75,6 +70,10 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
         ...defaultIcon,
         ...params.icon,
     };
+
+    if (icon.href) {
+        links.unshift({rel: 'icon', type: icon.type, sizes: icon.sizes, href: icon.href});
+    }
 
     const {lang, isMobile, title, pluginsOptions = {}} = params;
     for (const plugin of plugins ?? []) {
@@ -92,7 +91,6 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
                 inlineScripts,
                 bodyContent,
                 helpers,
-                icon,
                 title,
             },
             commonOptions: {title, lang, isMobile},
@@ -114,7 +112,6 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
         inlineScripts,
         bodyContent,
         helpers,
-        icon,
         title,
     };
 }
