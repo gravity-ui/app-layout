@@ -60,9 +60,7 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
         new Set([...getRootClassName(theme), ...(className ? className.split(' ') : [])]),
     );
     const bodyContent: BodyContent = {
-        attributes: {
-            class: bodyClasses.filter(Boolean).join(' '),
-        },
+        attributes: {},
         className: bodyClasses,
         root: content.root,
         beforeRoot: content.beforeRoot ? [content.beforeRoot] : [],
@@ -100,6 +98,11 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
             utils: helpers,
         });
     }
+
+    bodyContent.attributes = {
+        ...bodyContent.attributes,
+        class: bodyContent.className.filter(Boolean).join(' '),
+    };
 
     if (lang) {
         htmlAttributes.lang = lang;
