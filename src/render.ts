@@ -9,17 +9,13 @@ export function createRenderFunction<Plugins extends Plugin[]>(plugins?: Plugins
 
         const {htmlAttributes, helpers, bodyContent} = content;
 
-        const bodyAttributes = {
-            class: bodyContent.className.filter(Boolean).join(' '),
-        };
-
         return `
 <!DOCTYPE html>
 <html ${helpers.attrs({...htmlAttributes})}>
 <head>
     ${renderHeadContent(content)}
 </head>
-<body ${helpers.attrs(bodyAttributes)}>
+<body ${helpers.attrs(bodyContent.attributes)}>
     ${renderBodyContent(bodyContent)}
 </body>
 </html>
