@@ -261,6 +261,8 @@ export interface HeadContent {
 }
 
 export interface BodyContent {
+  attributes: Attributes;
+  /** @deprecated use attributes.class instead */
   className: string[];
   beforeRoot: string[];
   root?: string;
@@ -479,17 +481,13 @@ app.get('/', async function (req, res) {
 
   const {htmlAttributes, helpers, bodyContent} = content;
 
-  const bodyAttributes = {
-    class: bodyContent.className.filter(Boolean).join(' '),
-  };
-
   res.write(`
         <!DOCTYPE html>
         <html ${helpers.attrs({...htmlAttributes})}>
         <head>
             ${renderHeadContent(content)}
         </head>
-        <body ${helpers.attrs(bodyAttributes)}>
+        <body ${helpers.attrs(bodyContent.attributes)}>
             ${renderBodyContent(content)}
     `);
 

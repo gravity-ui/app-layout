@@ -60,6 +60,9 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
         new Set([...getRootClassName(theme), ...(className ? className.split(' ') : [])]),
     );
     const bodyContent: BodyContent = {
+        attributes: {
+            class: bodyClasses.filter(Boolean).join(' '),
+        },
         className: bodyClasses,
         root: content.root,
         beforeRoot: content.beforeRoot ? [content.beforeRoot] : [],
