@@ -30,4 +30,4 @@ export type {
     GoogleAnalyticsCounter,
     GoogleAnalyticsPluginOptions,
 } from './plugins/google-analytics/index.js';
-export type {LayoutPluginOptions} from './plugins/layout/index.js';
+export type {LayoutPluginOptions, Manifest} from './plugins/layout/index.js';
