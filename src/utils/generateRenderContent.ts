@@ -11,17 +11,6 @@ import type {
 } from '../types.js';
 import {getRenderHelpers, hasProperty} from '../utils.js';
 
-function getRootClassName(theme?: string) {
-    if (!theme) {
-        return [];
-    }
-    const classes = ['g-root'];
-    if (theme) {
-        classes.push(`g-root_theme_${theme}`);
-    }
-    return classes;
-}
-
 const defaultIcon: Icon = {
     type: 'image/png',
     sizes: '16x16',
@@ -63,17 +52,9 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
     inlineScripts.unshift(`window.__DATA__ = ${htmlescape(params.data || {})};`);
 
     const content = params.bodyContent ?? {};
-
-    const {theme, className} = content;
-    const bodyClassName = Array.from(
-        new Set([...getRootClassName(theme), ...(className ? className.split(' ') : [])]),
-    )
-        .filter(Boolean)
-        .join(' ');
-
     const bodyContent: BodyContent = {
         attributes: {
-            class: bodyClassName,
+            class: content.className,
             ...content.attributes,
         },
         root: content.root,
