@@ -262,8 +262,6 @@ export interface HeadContent {
 
 export interface BodyContent {
   attributes: Attributes;
-  /** @deprecated use attributes.class instead */
-  className: string[];
   beforeRoot: string[];
   root?: string;
   afterRoot: string[];
@@ -335,7 +333,7 @@ Adds Yandex metrics counters on the page.
 Usage:
 
 ```js
-import {createMiddleware, createYandexMetrikaPlugin} from '@gravity-ui/app-layout';
+import {createRenderFunction, createYandexMetrikaPlugin} from '@gravity-ui/app-layout';
 
 const renderLayout = createRenderFunction([createYandexMetrikaPlugin()]);
 
@@ -395,7 +393,7 @@ Adds script and styles from webpack assets manifest file.
 Usage:
 
 ```js
-import {createMiddleware, createLayoutPlugin} from '@gravity-ui/app-layout';
+import {createRenderFunction, createLayoutPlugin} from '@gravity-ui/app-layout';
 
 const renderLayout = createRenderFunction([
   createLayoutPlugin({manifest: 'path/to/assets-manifest.json', publicPath: '/build/'}),

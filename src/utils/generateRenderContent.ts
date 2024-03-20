@@ -1,6 +1,14 @@
 import htmlescape from 'htmlescape';
 
-import type {BodyContent, Icon, Meta, Plugin, RenderContent, RenderParams} from '../types.js';
+import type {
+    Attributes,
+    BodyContent,
+    Icon,
+    Meta,
+    Plugin,
+    RenderContent,
+    RenderParams,
+} from '../types.js';
 import {getRenderHelpers, hasProperty} from '../utils.js';
 
 function getRootClassName(theme?: string) {
@@ -38,7 +46,7 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
     params: RenderParams<Data, Plugins>,
 ): RenderContent {
     const helpers = getRenderHelpers(params);
-    const htmlAttributes: Record<string, string> = {};
+    const htmlAttributes: Attributes = {...params.htmlAttributes};
     const meta = params.meta ?? [];
     // in terms of sets: meta = params.meta ∪ (defaultMeta ∖ params.meta)
     defaultMeta.forEach((defaultMetaItem) => {
@@ -55,13 +63,19 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
     inlineScripts.unshift(`window.__DATA__ = ${htmlescape(params.data || {})};`);
 
     const content = params.bodyContent ?? {};
+
     const {theme, className} = content;
-    const bodyClasses = Array.from(
+    const bodyClassName = Array.from(
         new Set([...getRootClassName(theme), ...(className ? className.split(' ') : [])]),
-    );
+    )
+        .filter(Boolean)
+        .join(' ');
+
     const bodyContent: BodyContent = {
-        attributes: {},
-        className: bodyClasses,
+        attributes: {
+            class: bodyClassName,
+            ...content.attributes,
+        },
         root: content.root,
         beforeRoot: content.beforeRoot ? [content.beforeRoot] : [],
         afterRoot: content.afterRoot ? [content.afterRoot] : [],
@@ -98,11 +112,6 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
             utils: helpers,
         });
     }
-
-    bodyContent.attributes = {
-        ...bodyContent.attributes,
-        class: bodyContent.className.filter(Boolean).join(' '),
-    };
 
     if (lang) {
         htmlAttributes.lang = lang;

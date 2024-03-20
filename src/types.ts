@@ -50,14 +50,10 @@ export interface HeadContent {
 
 export interface BodyContent {
     attributes: Attributes;
-    /** @deprecated use attributes.class instead */
-    className: string[];
     beforeRoot: string[];
     root?: string;
     afterRoot: string[];
 }
-
-export type OldBodyContent = Omit<BodyContent, 'attributes'>;
 
 export interface RenderContent extends HeadContent {
     htmlAttributes: Attributes;
@@ -77,7 +73,7 @@ export interface Plugin<Options = any, Name extends string = string> {
     name: Name;
     apply: (params: {
         options: Options | undefined;
-        renderContent: Omit<RenderContent, 'bodyContent'> & {bodyContent: OldBodyContent};
+        renderContent: RenderContent;
         commonOptions: CommonOptions;
         /** @deprecated use `renderContent.helpers` instead */
         utils: RenderHelpers;
@@ -88,6 +84,7 @@ export interface RenderParams<Data, Plugins extends Plugin[] = []> extends Commo
     icon?: Icon;
     nonce?: string;
     // content
+    htmlAttributes?: Attributes;
     meta?: Meta[];
     links?: Link[];
     scripts?: Script[];
@@ -97,6 +94,7 @@ export interface RenderParams<Data, Plugins extends Plugin[] = []> extends Commo
     bodyContent?: {
         theme?: string;
         className?: string;
+        attributes?: Attributes;
         beforeRoot?: string;
         root?: string;
         afterRoot?: string;
