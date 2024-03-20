@@ -51,6 +51,8 @@ interface RenderParams<Data, Plugins> {
   lang?: string;
   isMobile?: boolean;
 
+  // html attributes
+  htmlAttributes?: string;
   // header tag content
   // meta tags
   meta?: Meta[];
@@ -67,10 +69,10 @@ interface RenderParams<Data, Plugins> {
 
   // content of body tag
   bodyContent?: {
-    // initial application theme if @gravity-ui/uikit is used
-    theme?: string;
     // class name for body tag
     className?: string;
+    // body attributes
+    attributes?: string;
     // body content before div tag with id root
     beforeRoot?: string;
     // innerHtml content of div tag with id root
@@ -421,6 +423,43 @@ export interface LayoutOptions {
   prefix?: string;
 }
 ```
+
+### @gravity-ui/uikit
+
+Adds body attributes.
+
+Usage:
+
+```js
+import {createRenderFunction, createUikitPlugin} from '@gravity-ui/app-layout';
+
+const renderLayout = createRenderFunction([createUikitPlugin()]);
+
+app.get((req, res) => {
+  res.send(
+    renderLayout({
+      title: 'Home page',
+      pluginsOptions: {
+        uikit: {
+          theme: 'dark',
+          direction: 'ltr',
+        },
+      },
+    }),
+  );
+});
+```
+
+Plugin options:
+
+```typescript
+interface UikitPluginOptions {
+  theme: string;
+  direction?: 'ltr' | 'rtl';
+}
+```
+
+### Helpers
 
 There is helper to create all plugins:
 

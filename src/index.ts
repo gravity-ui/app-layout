@@ -6,6 +6,7 @@ export {
     createGoogleAnalyticsPlugin,
     createYandexMetrikaPlugin,
     createLayoutPlugin,
+    createUikitPlugin,
     createDefaultPlugins,
 } from './plugins/index.js';
 
@@ -31,3 +32,4 @@ export type {
     GoogleAnalyticsPluginOptions,
 } from './plugins/google-analytics/index.js';
 export type {LayoutPluginOptions, Manifest} from './plugins/layout/index.js';
+export type {UikitPluginOptions} from './plugins/uikit/index.js';

@@ -1,3 +1,4 @@
+import {createUikitPlugin} from './plugins/index.js';
 import {createRenderFunction} from './render.js';
 import type {Plugin} from './types.js';
 
@@ -30,19 +31,25 @@ test('should render body classes', () => {
         }),
     ).toMatch(/<body class="test">\s*<div id="root">\s*content\s*<\/div>\s*<\/body>/);
     expect(
-        createRenderFunction()({
+        createRenderFunction([createUikitPlugin()])({
             title: 'Foobar',
-            bodyContent: {root: 'content', theme: 'light'},
+            bodyContent: {root: 'content'},
+            pluginsOptions: {
+                uikit: {theme: 'light'},
+            },
         }),
     ).toMatch(
         /<body class="g-root g-root_theme_light">\s*<div id="root">\s*content\s*<\/div>\s*<\/body>/,
     );
     expect(
-        createRenderFunction()({
+        createRenderFunction([createUikitPlugin()])({
             title: 'Foobar',
-            bodyContent: {root: 'content', className: 'test', theme: 'light'},
+            bodyContent: {root: 'content', className: 'test'},
+            pluginsOptions: {
+                uikit: {theme: 'light'},
+            },
         }),
     ).toMatch(
-        /<body class="g-root g-root_theme_light test">\s*<div id="root">\s*content\s*<\/div>\s*<\/body>/,
+        /<body class="test g-root g-root_theme_light">\s*<div id="root">\s*content\s*<\/div>\s*<\/body>/,
     );
 });

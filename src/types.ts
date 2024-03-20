@@ -92,7 +92,6 @@ export interface RenderParams<Data, Plugins extends Plugin[] = []> extends Commo
     inlineScripts?: string[];
     inlineStyleSheets?: string[];
     bodyContent?: {
-        theme?: string;
         className?: string;
         attributes?: Attributes;
         beforeRoot?: string;
