@@ -5,16 +5,24 @@ import type {CommonOptions, Plugin} from '../../types.js';
 import {getAbsoluteUrl, getJSONContent} from './helpers.js';
 import type {LayoutPluginOptions, Manifest} from './types.js';
 
-export type {LayoutPluginOptions} from './types.js';
+export type {LayoutPluginOptions, Manifest} from './types.js';
 
 export interface LayoutInitOptions {
     publicPath?: string;
-    manifest: string | ((commonOptions: CommonOptions) => string);
+    manifest: string | Manifest | ((commonOptions: CommonOptions) => string | Manifest);
 }
 export function createLayoutPlugin({
     publicPath = '/build/',
     manifest,
 }: LayoutInitOptions): Plugin<LayoutPluginOptions, 'layout'> {
+    let manifestContent: Manifest | undefined;
+    if (typeof manifest === 'string') {
+        manifestContent = getJSONContent(manifest, (err) => {
+            throw new Error(`Layout: Unable to read manifest file. ${err}`);
+        });
+    } else if (typeof manifest === 'object') {
+        manifestContent = manifest;
+    }
     return {
         name: 'layout',
         apply({options, renderContent, commonOptions}) {
@@ -22,23 +30,27 @@ export function createLayoutPlugin({
                 return;
             }
 
-            const manifestPath = typeof manifest === 'string' ? manifest : manifest(commonOptions);
+            if (typeof manifest === 'function') {
+                const m = manifest(commonOptions);
+                if (typeof m === 'string') {
+                    manifestContent = getJSONContent(m, (err) => {
+                        throw new Error(`Layout: Unable to read manifest file. ${err}`);
+                    });
+                } else {
+                    manifestContent = m;
+                }
+            }
 
-            const manifestFile: Manifest = getJSONContent(manifestPath, (err) => {
-                console.error('Unable to read manifest file', err);
-                process.exit(1);
-            });
-
-            function getWebpackAssetUrl(name: string) {
-                return getAbsoluteUrl(publicPath, manifestFile[name], options?.prefix);
+            if (!manifestContent || typeof manifestContent !== 'object') {
+                throw new Error('Layout: manifest content is not defined.');
             }
 
             renderContent.inlineScripts.unshift(
                 `window.__PUBLIC_PATH__ = ${htmlescape(publicPath)}`,
             );
 
-            const entrypointSpec = manifestFile.entrypoints
-                ? manifestFile.entrypoints[options.name]
+            const entrypointSpec = manifestContent.entrypoints
+                ? manifestContent.entrypoints[options.name]
                 : undefined;
             if (entrypointSpec && entrypointSpec.assets) {
                 const jsAssets = Array.isArray(entrypointSpec.assets.js)
@@ -63,6 +75,10 @@ export function createLayoutPlugin({
                     })),
                 );
             } else {
+                const manifestEntries = manifestContent;
+                const getWebpackAssetUrl = (name: string) => {
+                    return getAbsoluteUrl(publicPath, manifestEntries[name], options?.prefix);
+                };
                 renderContent.scripts.push(
                     {src: getWebpackAssetUrl('runtime.js'), defer: true, crossOrigin: 'anonymous'},
                     {src: getWebpackAssetUrl('vendors.js'), defer: true, crossOrigin: 'anonymous'},
