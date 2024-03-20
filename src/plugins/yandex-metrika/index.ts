@@ -7,12 +7,12 @@ export type {MetrikaCounter, MetrikaPluginOptions, UserParams} from './types.js'
 export function createYandexMetrikaPlugin(): Plugin<MetrikaPluginOptions, 'yandexMetrika'> {
     return {
         name: 'yandexMetrika',
-        apply({options, renderContent, utils}) {
+        apply({options, renderContent}) {
             if (!options || !options.counter) {
                 return;
             }
 
-            renderContent.bodyContent.afterRoot.push(renderMetrika(options, utils));
+            renderContent.bodyContent.afterRoot.push(renderMetrika(options, renderContent.helpers));
         },
     };
 }

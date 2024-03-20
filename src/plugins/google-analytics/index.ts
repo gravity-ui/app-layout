@@ -10,12 +10,14 @@ export function createGoogleAnalyticsPlugin(): Plugin<
 > {
     return {
         name: 'googleAnalytics',
-        apply({options, renderContent, utils}) {
+        apply({options, renderContent}) {
             if (!options || !options.counter) {
                 return;
             }
 
-            renderContent.bodyContent.afterRoot.push(renderGoogleAnalyticsCounter(options, utils));
+            renderContent.bodyContent.afterRoot.push(
+                renderGoogleAnalyticsCounter(options, renderContent.helpers),
+            );
         },
     };
 }
