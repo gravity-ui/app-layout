@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/gravity-ui/app-layout/compare/v1.7.1...v1.8.0) (2024-03-19)
+
+
+### Features
+
+* export html parts renderers ([#38](https://github.com/gravity-ui/app-layout/issues/38)) ([f5fee5e](https://github.com/gravity-ui/app-layout/commit/f5fee5ef2fa513d7e7742d61b6f374ed2154e1c7))
+
 ## [1.7.1](https://github.com/gravity-ui/app-layout/compare/v1.7.0...v1.7.1) (2024-02-27)
 
 
