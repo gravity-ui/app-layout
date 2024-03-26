@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.0.0](https://github.com/gravity-ui/app-layout/compare/v1.8.0...v2.0.0) (2024-03-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* add uikit plugin instead of theme render param ([#43](https://github.com/gravity-ui/app-layout/issues/43))
+* add htmlAttributes and bodyContent.attributes render params ([#41](https://github.com/gravity-ui/app-layout/issues/41))
+
+### Features
+
+* add htmlAttributes and bodyContent.attributes render params ([#41](https://github.com/gravity-ui/app-layout/issues/41)) ([f99b4ff](https://github.com/gravity-ui/app-layout/commit/f99b4ff4492a7bb85f94bbf39fa92b691d18fdc7))
+* add uikit plugin instead of theme render param ([#43](https://github.com/gravity-ui/app-layout/issues/43)) ([329892c](https://github.com/gravity-ui/app-layout/commit/329892cd5fa004afdfc0745e17cdc1f91a343fe5))
+* **LayoutPlugin:** allow to pass manifest content to plugin, read manifest file on initialization ([#40](https://github.com/gravity-ui/app-layout/issues/40)) ([d2465b0](https://github.com/gravity-ui/app-layout/commit/d2465b0e3d4a9fabe8fdb4eaa0f0f4ab090c5982))
+
 ## [1.8.0](https://github.com/gravity-ui/app-layout/compare/v1.7.1...v1.8.0) (2024-03-19)
 
 
