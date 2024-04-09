@@ -36,18 +36,18 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
 ): RenderContent {
     const helpers = getRenderHelpers(params);
     const htmlAttributes: Attributes = {...params.htmlAttributes};
-    const meta = params.meta ?? [];
+    const meta = [...(params.meta ?? [])];
     // in terms of sets: meta = params.meta ∪ (defaultMeta ∖ params.meta)
     defaultMeta.forEach((defaultMetaItem) => {
         if (!meta.find(({name}) => name === defaultMetaItem.name)) {
             meta.push(defaultMetaItem);
         }
     });
-    const styleSheets = params.styleSheets || [];
-    const scripts = params.scripts || [];
-    const inlineStyleSheets = params.inlineStyleSheets || [];
-    const inlineScripts = params.inlineScripts || [];
-    const links = params.links || [];
+    const styleSheets = [...(params.styleSheets || [])];
+    const scripts = [...(params.scripts || [])];
+    const inlineStyleSheets = [...(params.inlineStyleSheets || [])];
+    const inlineScripts = [...(params.inlineScripts || [])];
+    const links = [...(params.links || [])];
 
     inlineScripts.unshift(`window.__DATA__ = ${htmlescape(params.data || {})};`);
 
