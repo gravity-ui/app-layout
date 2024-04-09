@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/gravity-ui/app-layout/compare/v2.0.0...v2.0.1) (2024-04-09)
+
+
+### Bug Fixes
+
+* do not modify input params ([#44](https://github.com/gravity-ui/app-layout/issues/44)) ([793bfd0](https://github.com/gravity-ui/app-layout/commit/793bfd0336600fbe296084f3241466be87228a4c))
+
 ## [2.0.0](https://github.com/gravity-ui/app-layout/compare/v1.8.0...v2.0.0) (2024-03-20)
 
 
