@@ -1,6 +1,6 @@
 import {createUikitPlugin} from './plugins/index.js';
 import {createRenderFunction} from './render.js';
-import type {Plugin} from './types.js';
+import type {Link, Meta, Plugin, Script, Stylesheet} from './types.js';
 
 function dirPlugin(): Plugin<void> {
     return {
@@ -52,4 +52,46 @@ test('should render body classes', () => {
     ).toMatch(
         /<body class="test g-root g-root_theme_light">\s*<div id="root">\s*content\s*<\/div>\s*<\/body>/,
     );
+});
+
+function modifyPlugin(): Plugin<void> {
+    return {
+        name: 'modifyPlugin',
+        apply({
+            renderContent: {meta, links, scripts, inlineScripts, styleSheets, inlineStyleSheets},
+        }) {
+            meta.push({name: 'test', content: 'test'});
+            links.push({rel: 'test', href: 'test'});
+            scripts.push({src: 'test.js'});
+            inlineScripts.push('console.log("test")');
+            styleSheets.push({href: 'test.css'});
+            inlineStyleSheets.push('body { color: red; }');
+        },
+    };
+}
+
+test('should not modify users params', () => {
+    const meta: Meta[] = [];
+    const links: Link[] = [];
+    const scripts: Script[] = [];
+    const inlineScripts: string[] = [];
+    const styleSheets: Stylesheet[] = [];
+    const inlineStyleSheets: string[] = [];
+
+    createRenderFunction([modifyPlugin()])({
+        title: 'test',
+        meta,
+        links,
+        scripts,
+        inlineScripts,
+        styleSheets,
+        inlineStyleSheets,
+    });
+
+    expect(meta).toEqual([]);
+    expect(links).toEqual([]);
+    expect(scripts).toEqual([]);
+    expect(inlineScripts).toEqual([]);
+    expect(styleSheets).toEqual([]);
+    expect(inlineStyleSheets).toEqual([]);
 });
