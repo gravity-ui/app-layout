@@ -65,13 +65,14 @@ export function createLayoutPlugin({
                     ...jsAssets.map((js) => ({
                         src: getAbsoluteUrl(publicPath, js, options?.prefix),
                         defer: true,
-                        crossOrigin: 'anonymous' as const,
+                        crossOrigin: options.scriptsCrossOrigin || 'anonymous',
                     })),
                 );
 
                 renderContent.styleSheets.push(
                     ...cssAssets.map((css) => ({
                         href: getAbsoluteUrl(publicPath, css, options?.prefix),
+                        crossOrigin: options.stylesCrossOrigin,
                     })),
                 );
             } else {

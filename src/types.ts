@@ -10,6 +10,7 @@ export interface Script {
 
 export interface Stylesheet {
     href: string;
+    crossOrigin?: '' | 'anonymous' | 'use-credentials';
 }
 
 export interface Link {
