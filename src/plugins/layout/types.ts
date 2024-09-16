@@ -13,4 +13,6 @@ export type Manifest = Record<string, string> & {
 export interface LayoutPluginOptions {
     name: string;
     prefix?: string;
+    scriptsCrossOrigin?: '' | 'anonymous' | 'use-credentials';
+    stylesCrossOrigin?: '' | 'anonymous' | 'use-credentials';
 }

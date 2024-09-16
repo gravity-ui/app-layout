@@ -65,13 +65,14 @@ export function createLayoutPlugin({
                     ...jsAssets.map((js) => ({
                         src: getAbsoluteUrl(publicPath, js, options?.prefix),
                         defer: true,
-                        crossOrigin: 'anonymous' as const,
+                        crossOrigin: options.scriptsCrossOrigin || 'anonymous',
                     })),
                 );
 
                 renderContent.styleSheets.push(
                     ...cssAssets.map((css) => ({
                         href: getAbsoluteUrl(publicPath, css, options?.prefix),
+                        crossOrigin: options.stylesCrossOrigin,
                     })),
                 );
             } else {
@@ -80,19 +81,40 @@ export function createLayoutPlugin({
                     return getAbsoluteUrl(publicPath, manifestEntries[name], options?.prefix);
                 };
                 renderContent.scripts.push(
-                    {src: getWebpackAssetUrl('runtime.js'), defer: true, crossOrigin: 'anonymous'},
-                    {src: getWebpackAssetUrl('vendors.js'), defer: true, crossOrigin: 'anonymous'},
-                    {src: getWebpackAssetUrl('commons.js'), defer: true, crossOrigin: 'anonymous'},
+                    {
+                        src: getWebpackAssetUrl('runtime.js'),
+                        defer: true,
+                        crossOrigin: options.scriptsCrossOrigin || 'anonymous',
+                    },
+                    {
+                        src: getWebpackAssetUrl('vendors.js'),
+                        defer: true,
+                        crossOrigin: options.scriptsCrossOrigin || 'anonymous',
+                    },
+                    {
+                        src: getWebpackAssetUrl('commons.js'),
+                        defer: true,
+                        crossOrigin: options.scriptsCrossOrigin || 'anonymous',
+                    },
                     {
                         src: getWebpackAssetUrl(`${options.name}.js`),
                         defer: true,
-                        crossOrigin: 'anonymous',
+                        crossOrigin: options.scriptsCrossOrigin || 'anonymous',
                     },
                 );
                 renderContent.styleSheets.push(
-                    {href: getWebpackAssetUrl('vendors.css')},
-                    {href: getWebpackAssetUrl('commons.css')},
-                    {href: getWebpackAssetUrl(`${options.name}.css`)},
+                    {
+                        href: getWebpackAssetUrl('vendors.css'),
+                        crossOrigin: options.stylesCrossOrigin,
+                    },
+                    {
+                        href: getWebpackAssetUrl('commons.css'),
+                        crossOrigin: options.stylesCrossOrigin,
+                    },
+                    {
+                        href: getWebpackAssetUrl(`${options.name}.css`),
+                        crossOrigin: options.stylesCrossOrigin,
+                    },
                 );
             }
         },
