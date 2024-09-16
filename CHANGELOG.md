@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/gravity-ui/app-layout/compare/v2.0.1...v2.1.0) (2024-09-16)
+
+
+### Features
+
+* **LayoutPlugin:** allow to set and pass crossOrigin for styles and scripts ([#46](https://github.com/gravity-ui/app-layout/issues/46)) ([ce9848f](https://github.com/gravity-ui/app-layout/commit/ce9848f6f244c3b723f01590e0200d6ca5008e8a))
+
 ## [2.0.1](https://github.com/gravity-ui/app-layout/compare/v2.0.0...v2.0.1) (2024-04-09)
 
 
