@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/gravity-ui/app-layout/compare/v2.1.0...v2.1.1) (2025-01-30)
+
+
+### Bug Fixes
+
+* **RenderBodyContent:** make renderBodyContent ssr-friendly ([#49](https://github.com/gravity-ui/app-layout/issues/49)) ([cb6a9ff](https://github.com/gravity-ui/app-layout/commit/cb6a9ff123440b15e7303837ed4446c03f5af264))
+
 ## [2.1.0](https://github.com/gravity-ui/app-layout/compare/v2.0.1...v2.1.0) (2024-09-16)
 
 
