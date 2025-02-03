@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/gravity-ui/app-layout/compare/v2.1.1...v2.2.0) (2025-02-03)
+
+
+### Features
+
+* **MetrikaTitles:** add option for disable sending page title ([#51](https://github.com/gravity-ui/app-layout/issues/51)) ([c19a877](https://github.com/gravity-ui/app-layout/commit/c19a877a1a7ec7670319bff5795434873dbb28aa))
+
 ## [2.1.1](https://github.com/gravity-ui/app-layout/compare/v2.1.0...v2.1.1) (2025-01-30)
 
 
