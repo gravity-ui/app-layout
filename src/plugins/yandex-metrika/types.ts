@@ -14,6 +14,8 @@ export interface MetrikaCounter {
     accurateTrackBounce?: boolean | number;
     /** @default false */
     webvisor?: boolean;
+    /** @default true */
+    sendTitle?: boolean;
     nonce?: string;
     encryptedExperiments?: string;
     /** @default false */
