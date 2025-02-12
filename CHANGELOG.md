@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/gravity-ui/app-layout/compare/v2.2.0...v2.2.1) (2025-02-12)
+
+
+### Bug Fixes
+
+* fix typo if metrika sendTitle params ([#53](https://github.com/gravity-ui/app-layout/issues/53)) ([5ed34ee](https://github.com/gravity-ui/app-layout/commit/5ed34ee25b1edb18837e9d96edd9d2886c700aee))
+
 ## [2.2.0](https://github.com/gravity-ui/app-layout/compare/v2.1.1...v2.2.0) (2025-02-03)
 
 
