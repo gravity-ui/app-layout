@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.2.1](https://github.com/gravity-ui/app-layout/compare/v2.2.0...v2.2.1) (2025-02-12)
+
+
+### Bug Fixes
+
+* fix typo if metrika sendTitle params ([#53](https://github.com/gravity-ui/app-layout/issues/53)) ([5ed34ee](https://github.com/gravity-ui/app-layout/commit/5ed34ee25b1edb18837e9d96edd9d2886c700aee))
+
+## [2.2.0](https://github.com/gravity-ui/app-layout/compare/v2.1.1...v2.2.0) (2025-02-03)
+
+
+### Features
+
+* **MetrikaTitles:** add option for disable sending page title ([#51](https://github.com/gravity-ui/app-layout/issues/51)) ([c19a877](https://github.com/gravity-ui/app-layout/commit/c19a877a1a7ec7670319bff5795434873dbb28aa))
+
+## [2.1.1](https://github.com/gravity-ui/app-layout/compare/v2.1.0...v2.1.1) (2025-01-30)
+
+
+### Bug Fixes
+
+* **RenderBodyContent:** make renderBodyContent ssr-friendly ([#49](https://github.com/gravity-ui/app-layout/issues/49)) ([cb6a9ff](https://github.com/gravity-ui/app-layout/commit/cb6a9ff123440b15e7303837ed4446c03f5af264))
+
 ## [2.1.0](https://github.com/gravity-ui/app-layout/compare/v2.0.1...v2.1.0) (2024-09-16)
 
 
