@@ -70,7 +70,7 @@ export function renderMetrika(params: MetrikaPluginOptions, utils: RenderHelpers
                     trackLinks: ${Boolean(config.trackLinks)},
                     accurateTrackBounce: ${config.accurateTrackBounce},
                     webvisor: ${Boolean(config.webvisor)},
-                    sendTitile: ${Boolean(config.sendTitle)},
+                    sendTitle: ${Boolean(config.sendTitle)},
                     triggerEvent: ${Boolean(config.triggerEvent)},
                     trackHash: ${Boolean(config.trackHash)},
                     ecommerce: ${config.ecommerce},
