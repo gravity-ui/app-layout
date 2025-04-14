@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.2](https://github.com/gravity-ui/app-layout/compare/v2.2.1...v2.2.2) (2025-04-14)
+
+
+### Bug Fixes
+
+* **layout:** export LayoutInitOptions type ([#55](https://github.com/gravity-ui/app-layout/issues/55)) ([eb2b863](https://github.com/gravity-ui/app-layout/commit/eb2b863057e3c02645a45d30505dd2027c380e0e))
+
 ## [2.2.1](https://github.com/gravity-ui/app-layout/compare/v2.2.0...v2.2.1) (2025-02-12)
 
 
