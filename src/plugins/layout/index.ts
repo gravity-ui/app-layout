@@ -11,11 +11,13 @@ export interface LayoutInitOptions {
     publicPath?: string;
     manifest: string | Manifest | ((commonOptions: CommonOptions) => string | Manifest);
 }
+
 export function createLayoutPlugin({
     publicPath = '/build/',
     manifest,
 }: LayoutInitOptions): Plugin<LayoutPluginOptions, 'layout'> {
     let manifestContent: Manifest | undefined;
+
     if (typeof manifest === 'string') {
         manifestContent = getJSONContent(manifest, (err) => {
             throw new Error(`Layout: Unable to read manifest file. ${err}`);
@@ -23,6 +25,7 @@ export function createLayoutPlugin({
     } else if (typeof manifest === 'object') {
         manifestContent = manifest;
     }
+
     return {
         name: 'layout',
         apply({options, renderContent, commonOptions}) {
@@ -32,6 +35,7 @@ export function createLayoutPlugin({
 
             if (typeof manifest === 'function') {
                 const m = manifest(commonOptions);
+
                 if (typeof m === 'string') {
                     manifestContent = getJSONContent(m, (err) => {
                         throw new Error(`Layout: Unable to read manifest file. ${err}`);
@@ -52,6 +56,7 @@ export function createLayoutPlugin({
             const entrypointSpec = manifestContent.entrypoints
                 ? manifestContent.entrypoints[options.name]
                 : undefined;
+
             if (entrypointSpec && entrypointSpec.assets) {
                 const jsAssets = Array.isArray(entrypointSpec.assets.js)
                     ? entrypointSpec.assets.js
@@ -80,6 +85,7 @@ export function createLayoutPlugin({
                 const getWebpackAssetUrl = (name: string) => {
                     return getAbsoluteUrl(publicPath, manifestEntries[name], options?.prefix);
                 };
+
                 renderContent.scripts.push(
                     {
                         src: getWebpackAssetUrl('runtime.js'),
