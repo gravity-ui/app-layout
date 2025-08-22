@@ -459,6 +459,43 @@ interface UikitPluginOptions {
 }
 ```
 
+### Remote Versions
+
+Добавляет информацию о версиях микрофронтендов на страницу.
+
+Этот плагин создает глобальный объект `window.__REMOTE_VERSIONS__`, содержащий указанные версии микрофронтендов, который может использоваться module federation или аналогичными архитектурами микрофронтендов для определения того, какие версии удаленных модулей загружать.
+
+Он может использоваться в связке с [App Builder](https://github.com/gravity-ui/app-builder?tab=readme-ov-file#module-federation) и опцией `moduleFederation.remotesRuntimeVersioning` для автоматической загрузки удаленных модулей с соответствующими версиями.
+
+Использование:
+
+```js
+import {createRenderFunction, createRemoteVersionsPlugin} from '@gravity-ui/app-layout';
+
+const renderLayout = createRenderFunction([createRemoteVersionsPlugin()]);
+
+app.get((req, res) => {
+  res.send(
+    renderLayout({
+      title: 'Home page',
+      pluginsOptions: {
+        remoteVersions: {
+          header: '1.2.3',
+          footer: '2.1.0',
+          sidebar: '0.5.1',
+        },
+      },
+    }),
+  );
+});
+```
+
+Параметры плагина:
+
+```typescript
+type RemoteVersionsPluginOptions = Record<string, string>;
+```
+
 ### Утилиты
 
 Для создания плагинов используется предустановленная утилита:
