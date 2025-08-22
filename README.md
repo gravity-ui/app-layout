@@ -459,6 +459,43 @@ interface UikitPluginOptions {
 }
 ```
 
+### Remote Versions
+
+Adds microfrontend versions information to the page.
+
+This plugin creates a global `window.__REMOTE_VERSIONS__` object containing the provided microfrontend versions, which can be used by module federation or similar microfrontend architectures to determine which versions of remote modules to load.
+
+It can be used in combination with [App Builder](https://github.com/gravity-ui/app-builder?tab=readme-ov-file#module-federation) and the `moduleFederation.remotesRuntimeVersioning` option to automatically load remote modules with the corresponding versions.
+
+Usage:
+
+```js
+import {createRenderFunction, createRemoteVersionsPlugin} from '@gravity-ui/app-layout';
+
+const renderLayout = createRenderFunction([createRemoteVersionsPlugin()]);
+
+app.get((req, res) => {
+  res.send(
+    renderLayout({
+      title: 'Home page',
+      pluginsOptions: {
+        remoteVersions: {
+          header: '1.2.3',
+          footer: '2.1.0',
+          sidebar: '0.5.1',
+        },
+      },
+    }),
+  );
+});
+```
+
+Plugin options:
+
+```typescript
+type RemoteVersionsPluginOptions = Record<string, string>;
+```
+
 ### Helpers
 
 There is helper to create all plugins:

@@ -7,6 +7,7 @@ export {
     createYandexMetrikaPlugin,
     createLayoutPlugin,
     createUikitPlugin,
+    createRemoteVersionsPlugin,
     createDefaultPlugins,
 } from './plugins/index.js';
 
@@ -33,3 +34,4 @@ export type {
 } from './plugins/google-analytics/index.js';
 export type {LayoutPluginOptions, Manifest, LayoutInitOptions} from './plugins/layout/index.js';
 export type {UikitPluginOptions} from './plugins/uikit/index.js';
+export type {RemoteVersionsPluginOptions} from './plugins/remote-versions/index.js';

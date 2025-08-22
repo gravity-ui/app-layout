@@ -1,6 +1,7 @@
 import {createGoogleAnalyticsPlugin} from './google-analytics/index.js';
 import {createLayoutPlugin} from './layout/index.js';
 import type {LayoutInitOptions} from './layout/index.js';
+import {createRemoteVersionsPlugin} from './remote-versions/index.js';
 import {createUikitPlugin} from './uikit/index.js';
 import {createYandexMetrikaPlugin} from './yandex-metrika/index.js';
 
@@ -18,4 +19,5 @@ export {
     createYandexMetrikaPlugin,
     createLayoutPlugin,
     createUikitPlugin,
+    createRemoteVersionsPlugin,
 };
