@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0](https://github.com/gravity-ui/app-layout/compare/v2.2.2...v2.3.0) (2025-08-22)
+
+
+### Features
+
+* add remote-versions plugin ([#58](https://github.com/gravity-ui/app-layout/issues/58)) ([205dfe4](https://github.com/gravity-ui/app-layout/commit/205dfe4bc8db9cc05b9c74fdc997bf7f18e77b78))
+
 ## [2.2.2](https://github.com/gravity-ui/app-layout/compare/v2.2.1...v2.2.2) (2025-04-14)
 
 
