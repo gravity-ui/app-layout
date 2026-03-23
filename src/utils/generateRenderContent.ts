@@ -71,13 +71,14 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
         links.unshift({rel: 'icon', type: icon.type, sizes: icon.sizes, href: icon.href});
     }
 
-    const {lang, isMobile, title, pluginsOptions = {}} = params;
+    const {lang, isMobile, title, base, pluginsOptions = {}} = params;
     for (const plugin of plugins ?? []) {
         plugin.apply({
             options: hasProperty(pluginsOptions, plugin.name)
                 ? pluginsOptions[plugin.name]
                 : undefined,
             renderContent: {
+                base,
                 htmlAttributes,
                 meta,
                 links,
@@ -99,6 +100,7 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
     }
 
     return {
+        base,
         htmlAttributes,
         meta,
         links,

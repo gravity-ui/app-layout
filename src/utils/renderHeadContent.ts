@@ -1,11 +1,21 @@
 import type {HeadContent} from '../types.js';
 
 export function renderHeadContent(content: HeadContent): string {
-    const {scripts, helpers, links, meta, styleSheets, inlineStyleSheets, inlineScripts, title} =
-        content;
+    const {
+        base,
+        scripts,
+        helpers,
+        links,
+        meta,
+        styleSheets,
+        inlineStyleSheets,
+        inlineScripts,
+        title,
+    } = content;
 
     return `
         <meta charset="utf-8">
+        ${base ? `<base ${helpers.attrs({...base})}>` : ''}
         <title>${title}</title>
         ${[
             ...scripts.map(({src, crossOrigin}) =>
