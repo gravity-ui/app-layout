@@ -13,9 +13,11 @@ export function renderHeadContent(content: HeadContent): string {
         title,
     } = content;
 
+    const baseAttrs = base ? helpers.attrs({...base}) : '';
+
     return `
         <meta charset="utf-8">
-        ${base ? `<base ${helpers.attrs({...base})}>` : ''}
+        ${baseAttrs ? `<base ${baseAttrs}>` : ''}
         <title>${title}</title>
         ${[
             ...scripts.map(({src, crossOrigin}) =>

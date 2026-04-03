@@ -71,7 +71,7 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
         links.unshift({rel: 'icon', type: icon.type, sizes: icon.sizes, href: icon.href});
     }
 
-    const {lang, isMobile, title, base, pluginsOptions = {}} = params;
+    const {lang, isMobile, title, base = {}, pluginsOptions = {}} = params;
     for (const plugin of plugins ?? []) {
         plugin.apply({
             options: hasProperty(pluginsOptions, plugin.name)

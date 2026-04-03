@@ -62,7 +62,7 @@ export interface BodyContent {
     afterRoot: string[];
 }
 
-export interface RenderContent extends HeadContent {
+export interface RenderContent extends Required<HeadContent> {
     htmlAttributes: Attributes;
     bodyContent: BodyContent;
 }
