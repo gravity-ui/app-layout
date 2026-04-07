@@ -32,6 +32,11 @@ export interface Icon {
 
 export type Meta = {name: string; content: string};
 
+export interface Base {
+    href?: string;
+    target?: HTMLBaseElement['target'];
+}
+
 export interface CommonOptions {
     title: string;
     lang?: string;
@@ -39,6 +44,7 @@ export interface CommonOptions {
 }
 
 export interface HeadContent {
+    base?: Base;
     scripts: Script[];
     helpers: RenderHelpers;
     links: Link[];
@@ -56,7 +62,7 @@ export interface BodyContent {
     afterRoot: string[];
 }
 
-export interface RenderContent extends HeadContent {
+export interface RenderContent extends Required<HeadContent> {
     htmlAttributes: Attributes;
     bodyContent: BodyContent;
 }
@@ -84,6 +90,7 @@ export interface RenderParams<Data, Plugins extends Plugin[] = []> extends Commo
     data?: Data;
     icon?: Icon;
     nonce?: string;
+    base?: Base;
     // content
     htmlAttributes?: Attributes;
     meta?: Meta[];

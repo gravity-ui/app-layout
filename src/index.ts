@@ -12,6 +12,7 @@ export {
 } from './plugins/index.js';
 
 export type {
+    Base,
     Plugin,
     Icon,
     Link,

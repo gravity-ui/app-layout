@@ -16,6 +16,24 @@ test('should allow `<html>` attributes override', () => {
     expect(createRenderFunction([dirPlugin()])({title: 'Foobar'})).toMatch('<html dir="ltr">');
 });
 
+test('should render `<base>` tag with target', () => {
+    const html = createRenderFunction()({title: 'Foobar', base: {target: '_top'}});
+    expect(html).toMatch('<base target="_top">');
+});
+
+test('should render `<base>` tag with href and target', () => {
+    const html = createRenderFunction()({
+        title: 'Foobar',
+        base: {href: 'https://example.com/', target: '_top'},
+    });
+    expect(html).toMatch('<base href="https://example.com/" target="_top">');
+});
+
+test('should not render `<base>` tag when base is not provided', () => {
+    const html = createRenderFunction()({title: 'Foobar'});
+    expect(html).not.toMatch('<base');
+});
+
 test('should render root content', () => {
     expect(createRenderFunction()({title: 'Foobar'})).toMatch(/<div id="root">\s*<\/div>/);
     expect(createRenderFunction()({title: 'Foobar', bodyContent: {root: 'content'}})).toMatch(
