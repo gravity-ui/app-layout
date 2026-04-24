@@ -35,6 +35,7 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
     params: RenderParams<Data, Plugins>,
 ): RenderContent {
     const helpers = getRenderHelpers(params);
+
     const htmlAttributes: Attributes = {...params.htmlAttributes};
     const meta = [...(params.meta ?? [])];
     // in terms of sets: meta = params.meta ∪ (defaultMeta ∖ params.meta)
@@ -73,7 +74,7 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
 
     const {lang, isMobile, title, base = {}, pluginsOptions = {}} = params;
     for (const plugin of plugins ?? []) {
-        plugin.apply({
+        const result = plugin.apply({
             options: hasProperty(pluginsOptions, plugin.name)
                 ? pluginsOptions[plugin.name]
                 : undefined,
@@ -93,6 +94,10 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
             commonOptions: {title, lang, isMobile},
             utils: helpers,
         });
+
+        if (result === false) {
+            break;
+        }
     }
 
     if (lang) {

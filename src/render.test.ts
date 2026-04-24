@@ -1,4 +1,4 @@
-import {createUikitPlugin} from './plugins/index.js';
+import {createIncompatibleWarningPlugin, createUikitPlugin} from './plugins/index.js';
 import {createRenderFunction} from './render.js';
 import type {Link, Meta, Plugin, Script, Stylesheet} from './types.js';
 
@@ -112,4 +112,39 @@ test('should not modify users params', () => {
     expect(inlineScripts).toEqual([]);
     expect(styleSheets).toEqual([]);
     expect(inlineStyleSheets).toEqual([]);
+});
+
+test('should render incompatible browser stub page and skip plugins', () => {
+    const spy = jest.fn();
+    const spyPlugin: Plugin<void, 'spyPlugin'> = {
+        name: 'spyPlugin',
+        apply: spy,
+    };
+
+    const html = createRenderFunction([createIncompatibleWarningPlugin(), spyPlugin])({
+        title: 'My App',
+        data: {secret: 'value'},
+        scripts: [{src: 'app.js'}],
+        styleSheets: [{href: 'app.css'}],
+        pluginsOptions: {
+            incompatibleWarning: {enable: true},
+        },
+    });
+
+    expect(spy).not.toHaveBeenCalled();
+    expect(html).toMatch('layout-warning__container');
+    expect(html).not.toMatch('<script src=');
+    expect(html).not.toMatch('<link rel="stylesheet"');
+    expect(html).not.toMatch('window.__DATA__');
+});
+
+test('should render normally when incompatibleWarning.enable is false', () => {
+    const html = createRenderFunction([createIncompatibleWarningPlugin()])({
+        title: 'My App',
+        pluginsOptions: {
+            incompatibleWarning: {enable: false},
+        },
+    });
+
+    expect(html).not.toMatch('layout-warning__container');
 });

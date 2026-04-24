@@ -78,13 +78,17 @@ export interface RenderHelpers {
 }
 export interface Plugin<Options = any, Name extends string = string> {
     name: Name;
+    /**
+     * Hook invoked once per render; mutate `renderContent` to contribute scripts/styles/meta/etc.
+     * @returns Return `false` to abort the plugin chain (subsequent plugins are skipped); any other value continues.
+     */
     apply: (params: {
         options: Options | undefined;
         renderContent: RenderContent;
         commonOptions: CommonOptions;
         /** @deprecated use `renderContent.helpers` instead */
         utils: RenderHelpers;
-    }) => void;
+    }) => void | false;
 }
 export interface RenderParams<Data, Plugins extends Plugin[] = []> extends CommonOptions {
     data?: Data;
