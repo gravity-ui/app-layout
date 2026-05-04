@@ -1,3 +1,5 @@
+import escapeHTML from 'escape-html';
+
 import type {HeadContent} from '../types.js';
 
 export function renderHeadContent(content: HeadContent): string {
@@ -18,7 +20,7 @@ export function renderHeadContent(content: HeadContent): string {
     return `
         <meta charset="utf-8">
         ${baseAttrs ? `<base ${baseAttrs}>` : ''}
-        <title>${title}</title>
+        <title>${escapeHTML(title)}</title>
         ${[
             ...scripts.map(({src, crossOrigin}) =>
                 helpers.renderLink({href: src, crossOrigin, rel: 'preload', as: 'script'}),
