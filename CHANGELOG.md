@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.1](https://github.com/gravity-ui/app-layout/compare/v2.4.0...v2.4.1) (2026-05-05)
+
+
+### Bug Fixes
+
+* **renderHeadContent:** add escaping for title tag content ([#63](https://github.com/gravity-ui/app-layout/issues/63)) ([c71a32d](https://github.com/gravity-ui/app-layout/commit/c71a32d4c32bd246ebabe5735ce4a9c81ee3c9e3))
+
 ## [2.4.0](https://github.com/gravity-ui/app-layout/compare/v2.3.0...v2.4.0) (2026-04-07)
 
 
