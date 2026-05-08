@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/gravity-ui/app-layout/compare/v2.4.1...v2.5.0) (2026-05-08)
+
+
+### Features
+
+* add incompatible warning page ([#62](https://github.com/gravity-ui/app-layout/issues/62)) ([fef5c05](https://github.com/gravity-ui/app-layout/commit/fef5c05d6b83dcda8ce8ef6614867d1d39abda06))
+
 ## [2.4.1](https://github.com/gravity-ui/app-layout/compare/v2.4.0...v2.4.1) (2026-05-05)
 
 
