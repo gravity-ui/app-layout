@@ -8,8 +8,23 @@ export {
     createLayoutPlugin,
     createUikitPlugin,
     createRemoteVersionsPlugin,
+    createIncompatibleWarningPlugin,
     createDefaultPlugins,
 } from './plugins/index.js';
+export {
+    INCOMPATIBLE_COOKIE,
+    defaultIncompatibleWarningTranslationMap,
+} from './plugins/incompatible-warning/index.js';
+export type {
+    BrowserInfo,
+    IncompatibleI18n,
+    IncompatibleOptions,
+    ServiceIcon,
+    ServiceIconImage,
+    ServiceIconSvg,
+    TechnicalInfo,
+    TechnicalInfoItem,
+} from './plugins/incompatible-warning/index.js';
 
 export type {
     Base,
