@@ -277,7 +277,8 @@ function getInlineScript(): string {
 
         if (button) {
             button.addEventListener('click', function() {
-                document.cookie = '${INCOMPATIBLE_COOKIE}=1; max-age=${INCOMPATIBLE_COOKIE_EXPIRED}; path=/';
+                var secure = location.protocol === 'https:' ? '; Secure' : '';
+                document.cookie = '${INCOMPATIBLE_COOKIE}=1; max-age=${INCOMPATIBLE_COOKIE_EXPIRED}; path=/; SameSite=Lax' + secure;
                 window.location.reload();
             });
         }
