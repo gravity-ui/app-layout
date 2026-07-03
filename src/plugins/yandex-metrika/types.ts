@@ -28,6 +28,8 @@ export interface MetrikaCounter {
     type?: number;
     /** @default {} */
     userParams?: UserParams;
+    /** @default false */
+    disableYtm?: boolean;
 }
 
 export type MetrikaPluginOptions = {

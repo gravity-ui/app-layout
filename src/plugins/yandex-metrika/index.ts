@@ -27,6 +27,7 @@ const defaultCounterConfig: Omit<MetrikaCounter, 'id'> = {
     triggerEvent: false,
     trackHash: false,
     ecommerce: false,
+    disableYtm: false,
     type: 0,
 };
 
@@ -71,6 +72,7 @@ export function renderMetrika(params: MetrikaPluginOptions, utils: RenderHelpers
                     accurateTrackBounce: ${config.accurateTrackBounce},
                     webvisor: ${Boolean(config.webvisor)},
                     sendTitle: ${Boolean(config.sendTitle)},
+                    disableYtm: ${Boolean(config.disableYtm)},
                     triggerEvent: ${Boolean(config.triggerEvent)},
                     trackHash: ${Boolean(config.trackHash)},
                     ecommerce: ${config.ecommerce},
