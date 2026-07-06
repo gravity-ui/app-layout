@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.1](https://github.com/gravity-ui/app-layout/compare/v2.5.0...v2.5.1) (2026-07-06)
+
+
+### Bug Fixes
+
+* **incompatible:** improve incompatible cookie security ([#66](https://github.com/gravity-ui/app-layout/issues/66)) ([b750b31](https://github.com/gravity-ui/app-layout/commit/b750b31780e517dc1a0af46e30d10e166f073d7b))
+
 ## [2.5.0](https://github.com/gravity-ui/app-layout/compare/v2.4.1...v2.5.0) (2026-05-08)
 
 
