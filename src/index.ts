@@ -2,6 +2,11 @@ export {generateRenderContent} from './utils/generateRenderContent.js';
 export {renderHeadContent} from './utils/renderHeadContent.js';
 export {renderBodyContent} from './utils/renderBodyContent.js';
 export {createRenderFunction} from './render.js';
+export type {
+    PublicPathFallbacks,
+    AssetRetryOptions,
+    AssetLoadError,
+} from './plugins/layout/asset-loading/types.js';
 export {
     createGoogleAnalyticsPlugin,
     createYandexMetrikaPlugin,

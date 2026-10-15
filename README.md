@@ -453,6 +453,61 @@ export interface LayoutOptions {
 }
 ```
 
+#### Public path fallbacks
+
+Loads initial scripts and stylesheets from backup addresses if loading from `publicPath` fails.
+
+Usage:
+
+```js
+createLayoutPlugin({
+  manifest: 'path/to/assets-manifest.json',
+  publicPath: 'https://static.example.com/build/',
+  publicPathFallbacks: ['https://backup.example.com/build/', '/build/'],
+});
+```
+
+These options are also available in `createDefaultPlugins({layout: …})`. Enable the layout plugin with `pluginsOptions.layout.name`, as in the example above. Omitting `publicPathFallbacks` or passing `[]` preserves normal rendering.
+
+You can also use a callback function:
+
+```js
+createLayoutPlugin({
+  manifest: 'path/to/assets-manifest.json',
+  publicPath: 'https://static.example.com/build/',
+  publicPathFallbacks: () =>
+    location.hostname.endsWith('.example.org')
+      ? ['https://backup.example.org/build/', '/build/']
+      : ['/build/'],
+});
+```
+
+The function runs once and must be self-contained, without closures or imports. It receives `{publicPath}`; for root-relative primary paths, this value includes `layout.prefix`. Returning `[]` uses the primary address without retries.
+
+Retry options:
+
+```typescript
+interface AssetRetryOptions {
+  retries?: number; // Additional attempts per address. Default: 2.
+  delayMs?: number; // Delay before the first retry, in milliseconds. Default: 500.
+  factor?: number; // Multiplier for subsequent retry delays. Default: 2.
+  maxDelayMs?: number; // Maximum retry delay, in milliseconds. Default: 3000.
+}
+```
+
+Pass these options as `assetRetry` to `createLayoutPlugin`. Each resource starts at the primary address. After exhausting retries for an address, the loader tries the backups in the specified order. Retries are triggered by resource loading errors.
+
+Backup addresses must serve the same build files at the same relative paths. Do not include query parameters or fragments in base addresses. Trailing slashes are added and duplicate addresses are removed automatically. A path such as `/build/` is relative to the page's origin; include any application prefix explicitly. Allow backup domains in CSP and configure CORS.
+
+Loading behavior:
+
+- Supports `defer` scripts without `async` or `type`, and stylesheets under the primary path, preserving nonce and `crossOrigin`. Other resources retain normal rendering.
+- Stylesheets load in parallel. Scripts run in order after stylesheet attempts finish and the DOM is ready. `DOMContentLoaded` does not mean the application has finished loading.
+- Final failures emit `app-layout:asset-load-error` on `window`. The event detail contains `{type, originalUrl, attempts}` and is described by the exported `AssetLoadError` type; `attempts` lists attempted URLs, including retries. Register the handler before resources load. A final stylesheet loading failure does not block scripts; a final script loading failure stops the loader’s script queue.
+- Fallback handling also applies to direct `content.helpers` calls during streaming.
+
+Lazy chunks require separate configuration, such as `client.publicPathFallback` in [App Builder](https://github.com/gravity-ui/app-builder). Configure the backup addresses in both libraries; the fallback list is not shared through a global variable.
+
 ### @gravity-ui/uikit
 
 Adds body attributes.

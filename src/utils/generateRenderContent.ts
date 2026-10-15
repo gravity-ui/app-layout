@@ -73,24 +73,26 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
     }
 
     const {lang, isMobile, title, base = {}, pluginsOptions = {}} = params;
+    const renderContent: RenderContent = {
+        base,
+        htmlAttributes,
+        meta,
+        links,
+        styleSheets,
+        scripts,
+        inlineStyleSheets,
+        inlineScripts,
+        bodyContent,
+        helpers,
+        title,
+    };
+
     for (const plugin of plugins ?? []) {
         const result = plugin.apply({
             options: hasProperty(pluginsOptions, plugin.name)
                 ? pluginsOptions[plugin.name]
                 : undefined,
-            renderContent: {
-                base,
-                htmlAttributes,
-                meta,
-                links,
-                styleSheets,
-                scripts,
-                inlineStyleSheets,
-                inlineScripts,
-                bodyContent,
-                helpers,
-                title,
-            },
+            renderContent,
             commonOptions: {title, lang, isMobile},
             utils: helpers,
         });
@@ -104,17 +106,5 @@ export function generateRenderContent<Plugins extends Plugin[], Data>(
         htmlAttributes.lang = lang;
     }
 
-    return {
-        base,
-        htmlAttributes,
-        meta,
-        links,
-        styleSheets,
-        scripts,
-        inlineStyleSheets,
-        inlineScripts,
-        bodyContent,
-        helpers,
-        title,
-    };
+    return renderContent;
 }
