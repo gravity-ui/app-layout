@@ -1,59 +1,50 @@
-import type {HeadContent, Link, RenderHelpers, Script, Stylesheet} from '../../../types.js';
+import type {AssetRenderState, RenderHelpers, Script, Stylesheet} from '../../../types.js';
 
-import {createScriptAsset, createStyleAsset, isManagedPreload} from './assets.js';
+import {createScriptAsset, createStyleAsset} from './assets.js';
 import {serializeAssetRegistration, serializeBootstrap} from './serialization.js';
 import type {Asset, AssetLoadingConfig} from './types.js';
 
-// Подключаем fallback к общим helpers обычного и потокового рендера.
-export function patchRenderHelpers(content: HeadContent, config: AssetLoadingConfig): void {
-    const originalHelpers = {...content.helpers};
-    const renderer = createAssetRenderer(originalHelpers, config, content);
-
-    Object.assign(content.helpers, renderer);
-}
-
-function createAssetRenderer(
+export function createAssetRenderer(
     helpers: RenderHelpers,
     config: AssetLoadingConfig,
-    content: HeadContent,
+    state: AssetRenderState,
 ) {
-    let emitted = false;
-
-    function bootstrap(): string {
-        if (emitted) {
-            return '';
-        }
-        emitted = true;
-        return helpers.renderInlineScript(serializeBootstrap(config));
-    }
-
     function renderAsset(asset: Asset, originalHtml: string): string {
-        return (
-            bootstrap() +
-            helpers.renderInlineScript(serializeAssetRegistration(asset, originalHtml))
-        );
+        return helpers.renderInlineScript(serializeAssetRegistration(asset, originalHtml));
     }
 
     return {
-        renderScript(script: Script): string {
+        bootstrap(): string {
+            if (state.bootstrapEmitted) {
+                return '';
+            }
+            const html = helpers.renderInlineScript(serializeBootstrap(config));
+            state.bootstrapEmitted = true;
+            return html;
+        },
+        script(script: Script): string {
             const asset = createScriptAsset(script, config.publicPath);
             return asset
                 ? renderAsset(asset, helpers.renderScript(script))
                 : helpers.renderScript(script);
         },
-        renderStyle(style: Stylesheet): string {
+        style(style: Stylesheet): string {
             const asset = createStyleAsset(style, config.publicPath);
             return asset
                 ? renderAsset(asset, helpers.renderStyle(style))
                 : helpers.renderStyle(style);
         },
-        renderLink(link: Link): string {
-            if (!isManagedPreload(link, content.scripts, config.publicPath)) {
-                return helpers.renderLink(link);
-            }
-            return (
-                bootstrap() + helpers.renderLink({...link, 'data-app-layout-preload': ''} as Link)
-            );
+        preload(script: Script): string {
+            const link = {
+                href: script.src,
+                crossOrigin: script.crossOrigin,
+                rel: 'preload',
+                as: 'script',
+                ...(createScriptAsset(script, config.publicPath)
+                    ? {'data-app-layout-preload': ''}
+                    : {}),
+            };
+            return helpers.renderLink(link);
         },
     };
 }

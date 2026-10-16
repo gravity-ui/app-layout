@@ -484,7 +484,7 @@ createLayoutPlugin({
 
 The function runs once and must be self-contained, without closures or imports. It receives `{publicPath}`; for root-relative primary paths, this value includes `layout.prefix`. Returning `[]` uses the primary address without retries.
 
-The loader and callback are serialized from compiled server code using `Function.prototype.toString()`. Server bundlers must preserve self-contained function bodies: transformations such as esbuild `keepNames` can inject external helpers (for example, `__name`) that are unavailable in the browser. Test the HTML produced by your final server build. If bootstrap throws, synchronous registrations during HTML parsing restore the original resource tags. This recovery uses `document.write` and is subject to browser restrictions; it cannot recover if CSP blocks the registration scripts themselves.
+The loader is bundled and minified when app-layout is built. The user callback is serialized from compiled server code using `Function.prototype.toString()`: transformations such as esbuild `keepNames` can inject external helpers (`__name`) that are unavailable in the browser. Test callbacks in your final server build. If bootstrap throws, synchronous registrations during HTML parsing restore the original tags via `document.write`, subject to browser restrictions; recovery cannot help if CSP blocks the registration scripts.
 
 Retry options:
 
@@ -509,7 +509,16 @@ Loading behavior:
 - Supports `defer` scripts without `async` or `type`, and stylesheets under the primary path, preserving nonce and `crossOrigin`. Other resources retain normal rendering.
 - Stylesheets load in parallel. Scripts run in order after stylesheet attempts finish and the DOM is ready. `DOMContentLoaded` does not mean the application has finished loading.
 - Final failures emit `app-layout:asset-load-error` on `window`. The event detail contains `{type, originalUrl, attempts}` and is described by the exported `AssetLoadError` type; `attempts` lists attempted URLs, including retries. Register the handler before resources load. A final stylesheet loading failure does not block scripts; a final script loading failure stops the loader’s script queue.
-- Fallback handling also applies to direct `content.helpers` calls during streaming.
+- For early scripts during streaming, use `renderScripts(content, scripts, state)`, then `renderHeadContent(content, state)` with the same `state: AssetRenderState = {}` for one HTML response, even if content is regenerated. Bootstrap is emitted once; its initial configuration applies to the entire response. Direct `content.helpers` calls render ordinary tags without fallback handling.
+
+```ts
+import {renderHeadContent, renderScripts, type AssetRenderState} from '@gravity-ui/app-layout';
+
+const state: AssetRenderState = {};
+res.write(renderScripts(content, firstScripts, state));
+// ... await data and regenerate content if needed.
+res.write(renderHeadContent(content, state));
+```
 
 Lazy chunks require separate configuration, such as `client.publicPathFallback` in [App Builder](https://github.com/gravity-ui/app-builder). Configure the backup addresses in both libraries; the fallback list is not shared through a global variable.
 

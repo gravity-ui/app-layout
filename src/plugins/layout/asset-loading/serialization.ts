@@ -1,14 +1,13 @@
 import htmlescape from 'htmlescape';
 
-import {installAssetLoader} from './runtime.js';
+import {runtimeSource} from './runtime-source.js';
 import type {Asset, AssetLoadingConfig, PublicPathFallbacks} from './types.js';
 
 export function serializeBootstrap(config: AssetLoadingConfig): string {
-    const installSource = installAssetLoader.toString();
     const configSource = serializeRuntimeConfig(config);
 
     return `try {
-    (${installSource})(${configSource});
+    (${runtimeSource})(${configSource});
 } catch (error) {
     delete window.__APP_LAYOUT_ASSET_LOADER__;
 }`;

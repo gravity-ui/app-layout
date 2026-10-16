@@ -9,3 +9,6 @@ node_modules
 dist
 
 gravity-ui-app-layout*
+
+# Generated browser runtime
+src/plugins/layout/asset-loading/runtime-source.ts

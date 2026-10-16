@@ -1,6 +1,5 @@
 /** @jest-environment jsdom */
 import {createAssetLoadingConfig} from './config.js';
-import {installAssetLoader} from './runtime.js';
 import {serializeAssetRegistration, serializeBootstrap} from './serialization.js';
 import type {AssetLoader, PublicPathFallbacks} from './types.js';
 
@@ -38,17 +37,13 @@ test.each<PublicPathFallbacks>([
     expect(registration).not.toMatch(/<\/script/i);
 });
 
-test.each(['WeakMap', 'selector', 'helper', 'listener'])(
+test.each(['WeakMap', 'selector', 'listener'])(
     'bootstrap failure (%s) restores original tags during parsing',
     (failure) => {
         if (failure === 'WeakMap') {
             jest.spyOn(window, 'WeakMap').mockImplementation(() => {
                 throw new TypeError('WeakMap missing');
             });
-        } else if (failure === 'helper') {
-            jest.spyOn(installAssetLoader as {toString(): string}, 'toString').mockReturnValue(
-                'function installAssetLoader() { __name(function () {}, "helper"); }',
-            );
         } else if (failure === 'listener') {
             jest.spyOn(document, 'addEventListener').mockImplementationOnce(() => {
                 throw new Error('listener failed');

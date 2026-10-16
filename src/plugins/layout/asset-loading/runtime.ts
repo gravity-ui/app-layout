@@ -1,8 +1,7 @@
 import type {Asset, AssetLoader, AssetLoadingConfig} from './types.js';
 
 /**
- * Inlined into HTML using toString(). Keep all runtime dependencies inside this
- * function and avoid syntax that compiles to external TypeScript helpers.
+ * Bundled into a standalone browser script by scripts/build-runtime.mjs.
  * @param config - Normalized asset loading configuration.
  * @returns Nothing; installs a single loader for the page.
  */

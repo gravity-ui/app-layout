@@ -5,7 +5,6 @@ import htmlescape from 'htmlescape';
 import type {CommonOptions, Plugin} from '../../types.js';
 
 import {createAssetLoadingConfig} from './asset-loading/config.js';
-import {patchRenderHelpers} from './asset-loading/render.js';
 import type {AssetRetryOptions, PublicPathFallbacks} from './asset-loading/types.js';
 import {getAbsoluteUrl, getJSONContent} from './helpers.js';
 import type {LayoutPluginOptions, Manifest} from './types.js';
@@ -45,13 +44,13 @@ export function createLayoutPlugin({
             }
 
             if (assetLoading) {
-                patchRenderHelpers(renderContent, {
+                renderContent.assetLoading = {
                     ...assetLoading,
                     publicPath:
                         publicPath.startsWith('/') && !publicPath.startsWith('//')
                             ? posix.normalize((options.prefix ?? '') + publicPath)
                             : publicPath,
-                });
+                };
             }
 
             if (typeof manifest === 'function') {

@@ -1,4 +1,4 @@
-import type {Link, Script, Stylesheet} from '../../../types.js';
+import type {Script, Stylesheet} from '../../../types.js';
 
 import type {Asset} from './types.js';
 
@@ -34,16 +34,6 @@ export function createStyleAsset(style: Stylesheet, publicPath: string): Asset |
         originalUrl: style.href,
         crossOrigin: style.crossOrigin,
     };
-}
-
-export function isManagedPreload(link: Link, scripts: Script[], publicPath: string): boolean {
-    if (link.rel !== 'preload' || link.as !== 'script') {
-        return false;
-    }
-
-    return scripts.some(
-        (script) => script.src === link.href && Boolean(createScriptAsset(script, publicPath)),
-    );
 }
 
 function getAssetPath(url: string, publicPath: string): string | undefined {

@@ -1,3 +1,5 @@
+export {renderScripts} from './utils/renderScripts.js';
+export type {AssetRenderState} from './types.js';
 export {generateRenderContent} from './utils/generateRenderContent.js';
 export {renderHeadContent} from './utils/renderHeadContent.js';
 export {renderBodyContent} from './utils/renderBodyContent.js';
