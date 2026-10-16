@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.0](https://github.com/gravity-ui/app-layout/compare/v2.5.1...v2.6.0) (2026-10-16)
+
+
+### Features
+
+* add public path fallback ([#70](https://github.com/gravity-ui/app-layout/issues/70)) ([6ace928](https://github.com/gravity-ui/app-layout/commit/6ace928c60c6d071c80654e9bd0af599323e126b))
+
 ## [2.5.1](https://github.com/gravity-ui/app-layout/compare/v2.5.0...v2.5.1) (2026-07-06)
 
 
