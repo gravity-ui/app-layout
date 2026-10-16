@@ -16,6 +16,8 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
     }
 
     const fallbacks = resolveFallbacks();
+    const bases = [config.publicPath].concat(fallbacks);
+    let preferredBase = config.publicPath;
     const retries = fallbacks.length ? config.retry.retries : 0;
     const failures = new WeakMap<EventTarget, (event: Event) => void>();
     const registeredAssets = new Set<string>();
@@ -25,12 +27,16 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
     let processingScripts = false;
     let documentReady = document.readyState !== 'loading';
 
-    globals.__APP_LAYOUT_ASSET_LOADER__ = {enqueue};
-
-    window.addEventListener('error', handleResourceError, true);
-
-    if (!documentReady) {
-        document.addEventListener('DOMContentLoaded', handleDocumentReady, {once: true});
+    try {
+        window.addEventListener('error', handleResourceError, true);
+        if (!documentReady) {
+            document.addEventListener('DOMContentLoaded', handleDocumentReady, {once: true});
+        }
+        globals.__APP_LAYOUT_ASSET_LOADER__ = {enqueue};
+    } catch (error) {
+        window.removeEventListener('error', handleResourceError, true);
+        document.removeEventListener('DOMContentLoaded', handleDocumentReady);
+        throw error;
     }
 
     function resolveFallbacks(): string[] {
@@ -139,11 +145,16 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
     }
 
     function loadAsset(asset: Asset, nonce: string): Promise<boolean> {
-        const urls = [asset.originalUrl].concat(fallbacks.map((base) => base + asset.path));
+        const preferredIndex = bases.indexOf(preferredBase);
+        const candidates = bases.slice(preferredIndex).concat(bases.slice(0, preferredIndex));
+        const urls = candidates.map((base) =>
+            base === config.publicPath ? asset.originalUrl : base + asset.path,
+        );
         const attempts: string[] = [];
         let anchor: Comment | undefined;
         let element: HTMLScriptElement | HTMLLinkElement | undefined;
         let retryTimer: number | undefined;
+        let attemptTimer: number | undefined;
         let candidateIndex = 0;
         let retryIndex = 0;
         let settled = false;
@@ -173,13 +184,40 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
                 const url = urls[candidateIndex] as string;
 
                 attempts.push(url);
-                element = createAssetElement(asset, url, nonce);
-                element.onload = () => runSafely(() => finish(true));
-                failures.set(element, (event) => runSafely(() => handleAttemptError(event)));
-                anchor?.before(element);
+                const current = createAssetElement(asset, url, nonce);
+                element = current;
+                let active = true;
+                current.onload = () => {
+                    if (!active) {
+                        return;
+                    }
+                    active = false;
+                    runSafely(() => finish(true));
+                };
+                failures.set(current, (event) => {
+                    if (!active) {
+                        return;
+                    }
+                    active = false;
+                    runSafely(() => handleAttemptError(event));
+                });
+                if (config.retry.timeoutMs > 0) {
+                    attemptTimer = window.setTimeout(() => {
+                        if (!active) {
+                            return;
+                        }
+                        active = false;
+                        runSafely(() => {
+                            current.remove();
+                            handleAttemptError(null);
+                        });
+                    }, config.retry.timeoutMs);
+                }
+                anchor?.before(current);
             }
 
-            function handleAttemptError(event: Event): void {
+            function handleAttemptError(event: Event | null): void {
+                window.clearTimeout(attemptTimer);
                 if (element) {
                     clearAttemptHandlers(element);
                 }
@@ -191,7 +229,7 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
                     return;
                 }
 
-                event.stopImmediatePropagation();
+                event?.stopImmediatePropagation();
                 element?.remove();
                 element = undefined;
                 retryTimer = window.setTimeout(() => runSafely(startAttempt), delay);
@@ -203,6 +241,9 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
                 }
 
                 settled = true;
+                if (success) {
+                    preferredBase = candidates[candidateIndex] as string;
+                }
 
                 if (!success && asset.type === 'script') {
                     stopped = true;
@@ -210,6 +251,7 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
 
                 try {
                     window.clearTimeout(retryTimer);
+                    window.clearTimeout(attemptTimer);
 
                     if (element) {
                         clearAttemptHandlers(element);

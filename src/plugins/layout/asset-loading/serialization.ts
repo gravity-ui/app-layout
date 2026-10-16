@@ -7,14 +7,23 @@ export function serializeBootstrap(config: AssetLoadingConfig): string {
     const installSource = installAssetLoader.toString();
     const configSource = serializeRuntimeConfig(config);
 
-    return `(${installSource})(${configSource});`;
+    return `try {
+    (${installSource})(${configSource});
+} catch (error) {
+    delete window.__APP_LAYOUT_ASSET_LOADER__;
+}`;
 }
 
-export function serializeAssetRegistration(asset: Asset): string {
-    return `window.__APP_LAYOUT_ASSET_LOADER__.enqueue(
-    ${serializeInlineValue(asset)},
-    document.currentScript.nonce
-);`;
+export function serializeAssetRegistration(asset: Asset, originalHtml: string): string {
+    return `(function () {
+    var loader = window.__APP_LAYOUT_ASSET_LOADER__;
+    var current = document.currentScript;
+    if (loader) {
+        loader.enqueue(${serializeInlineValue(asset)}, current ? current.nonce : '');
+    } else if (current && document.readyState === 'loading') {
+        document.write(${serializeInlineValue(originalHtml)});
+    }
+})();`;
 }
 
 function serializeRuntimeConfig(config: AssetLoadingConfig): string {

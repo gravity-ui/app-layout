@@ -1,7 +1,8 @@
 import type {AssetLoadingConfig, AssetRetryOptions, PublicPathFallbacks} from './types.js';
 
 const DEFAULT_RETRY: Required<AssetRetryOptions> = {
-    retries: 2,
+    retries: 0,
+    timeoutMs: 10000,
     delayMs: 500,
     factor: 2,
     maxDelayMs: 3000,
@@ -19,7 +20,7 @@ export function createAssetLoadingConfig(
     return {
         publicPath: normalizePath(publicPath),
         fallbacks: normalizeFallbacks(fallbacks),
-        retry: {...DEFAULT_RETRY, ...retry},
+        retry: normalizeRetry(retry),
     };
 }
 
@@ -33,4 +34,13 @@ function normalizeFallbacks(fallbacks: PublicPathFallbacks): PublicPathFallbacks
     }
 
     return Array.from(new Set(fallbacks.map(normalizePath)));
+}
+
+function normalizeRetry(retry?: AssetRetryOptions): Required<AssetRetryOptions> {
+    return {
+        ...DEFAULT_RETRY,
+        ...Object.fromEntries(
+            Object.entries(retry ?? {}).filter(([, value]) => value !== undefined),
+        ),
+    };
 }

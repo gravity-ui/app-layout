@@ -484,18 +484,23 @@ createLayoutPlugin({
 
 The function runs once and must be self-contained, without closures or imports. It receives `{publicPath}`; for root-relative primary paths, this value includes `layout.prefix`. Returning `[]` uses the primary address without retries.
 
+The loader and callback are serialized from compiled server code using `Function.prototype.toString()`. Server bundlers must preserve self-contained function bodies: transformations such as esbuild `keepNames` can inject external helpers (for example, `__name`) that are unavailable in the browser. Test the HTML produced by your final server build. If bootstrap throws, synchronous registrations during HTML parsing restore the original resource tags. This recovery uses `document.write` and is subject to browser restrictions; it cannot recover if CSP blocks the registration scripts themselves.
+
 Retry options:
 
 ```typescript
 interface AssetRetryOptions {
-  retries?: number; // Additional attempts per address. Default: 2.
+  retries?: number; // Additional attempts per address. Default: 0.
   delayMs?: number; // Delay before the first retry, in milliseconds. Default: 500.
   factor?: number; // Multiplier for subsequent retry delays. Default: 2.
   maxDelayMs?: number; // Maximum retry delay, in milliseconds. Default: 3000.
+  timeoutMs?: number; // Attempt timeout, in milliseconds. Default: 10000; 0 disables.
 }
 ```
 
-Pass these options as `assetRetry` to `createLayoutPlugin`. Each resource starts at the primary address. After exhausting retries for an address, the loader tries the backups in the specified order. Retries are triggered by resource loading errors.
+Pass these options as `assetRetry` to `createLayoutPlugin`. By default, a resource error switches to the next address without retrying the same URL. Set `retries` to enable additional attempts with exponential delays. The loader remembers the last successful address and starts subsequent resources there, cycling through the remaining addresses as backups. An individual failure does not change the preferred address; it changes only after a successful load. In-flight resources keep their candidate order. Explicit `undefined` option values use the defaults.
+
+Each script or stylesheet attempt has a `timeoutMs` limit (10000 ms by default). A timeout follows the same retry policy as a loading error: retry the current URL while attempts remain, then try the next address. Set `0` to disable the timeout. The loader removes timed-out elements and ignores their late callbacks; removing a script does not guarantee cancellation of its execution.
 
 Backup addresses must serve the same build files at the same relative paths. Do not include query parameters or fragments in base addresses. Trailing slashes are added and duplicate addresses are removed automatically. A path such as `/build/` is relative to the page's origin; include any application prefix explicitly. Allow backup domains in CSP and configure CORS.
 

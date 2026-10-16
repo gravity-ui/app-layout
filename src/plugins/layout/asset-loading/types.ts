@@ -2,7 +2,9 @@
 export type PublicPathFallbacks = string[] | ((context: {publicPath: string}) => string[]);
 
 export interface AssetRetryOptions {
-    /** Additional attempts per URL after the first. Default: 2. */
+    /** Asset attempt timeout in milliseconds; 0 disables it. Default: 10000. */
+    timeoutMs?: number;
+    /** Additional attempts per URL after the first. Default: 0. */
     retries?: number;
     /** Delay before the first retry, in milliseconds. Default: 500. */
     delayMs?: number;

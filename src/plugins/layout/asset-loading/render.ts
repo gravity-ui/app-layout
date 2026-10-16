@@ -27,18 +27,25 @@ function createAssetRenderer(
         return helpers.renderInlineScript(serializeBootstrap(config));
     }
 
-    function renderAsset(asset: Asset): string {
-        return bootstrap() + helpers.renderInlineScript(serializeAssetRegistration(asset));
+    function renderAsset(asset: Asset, originalHtml: string): string {
+        return (
+            bootstrap() +
+            helpers.renderInlineScript(serializeAssetRegistration(asset, originalHtml))
+        );
     }
 
     return {
         renderScript(script: Script): string {
             const asset = createScriptAsset(script, config.publicPath);
-            return asset ? renderAsset(asset) : helpers.renderScript(script);
+            return asset
+                ? renderAsset(asset, helpers.renderScript(script))
+                : helpers.renderScript(script);
         },
         renderStyle(style: Stylesheet): string {
             const asset = createStyleAsset(style, config.publicPath);
-            return asset ? renderAsset(asset) : helpers.renderStyle(style);
+            return asset
+                ? renderAsset(asset, helpers.renderStyle(style))
+                : helpers.renderStyle(style);
         },
         renderLink(link: Link): string {
             if (!isManagedPreload(link, content.scripts, config.publicPath)) {

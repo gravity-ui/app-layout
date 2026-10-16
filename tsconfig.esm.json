@@ -3,6 +3,7 @@
   "compilerOptions": {
     "noEmit": false,
     "declaration": true,
+    "types": ["node"],
     "outDir": "dist/esm"
   },
   "include": ["src/**/*.ts"],
