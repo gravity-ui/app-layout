@@ -1,3 +1,5 @@
+import type {AssetLoadingConfig} from './plugins/layout/asset-loading/types.js';
+
 export type Attributes = Record<string, string | number | boolean | undefined>;
 
 export interface Script {
@@ -43,7 +45,13 @@ export interface CommonOptions {
     isMobile?: boolean;
 }
 
+/** Share one state across all fragments of an HTML response. */
+export interface AssetRenderState {
+    bootstrapEmitted?: boolean;
+}
+
 export interface HeadContent {
+    assetLoading?: AssetLoadingConfig;
     base?: Base;
     scripts: Script[];
     helpers: RenderHelpers;
@@ -62,7 +70,8 @@ export interface BodyContent {
     afterRoot: string[];
 }
 
-export interface RenderContent extends Required<HeadContent> {
+export interface RenderContent extends Required<Omit<HeadContent, 'assetLoading'>> {
+    assetLoading?: AssetLoadingConfig;
     htmlAttributes: Attributes;
     bodyContent: BodyContent;
 }

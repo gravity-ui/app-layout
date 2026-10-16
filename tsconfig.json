@@ -4,6 +4,7 @@
     "noEmit": true,
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    "types": ["node", "jest"],
     "verbatimModuleSyntax": true,
     "noUncheckedIndexedAccess": true,
     "experimentalDecorators": false,

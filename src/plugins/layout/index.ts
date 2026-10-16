@@ -1,7 +1,11 @@
+import {posix} from 'path';
+
 import htmlescape from 'htmlescape';
 
 import type {CommonOptions, Plugin} from '../../types.js';
 
+import {createAssetLoadingConfig} from './asset-loading/config.js';
+import type {AssetRetryOptions, PublicPathFallbacks} from './asset-loading/types.js';
 import {getAbsoluteUrl, getJSONContent} from './helpers.js';
 import type {LayoutPluginOptions, Manifest} from './types.js';
 
@@ -9,13 +13,19 @@ export type {LayoutPluginOptions, Manifest} from './types.js';
 
 export interface LayoutInitOptions {
     publicPath?: string;
+    publicPathFallbacks?: PublicPathFallbacks;
+    assetRetry?: AssetRetryOptions;
     manifest: string | Manifest | ((commonOptions: CommonOptions) => string | Manifest);
 }
 
 export function createLayoutPlugin({
     publicPath = '/build/',
     manifest,
+    publicPathFallbacks,
+    assetRetry,
 }: LayoutInitOptions): Plugin<LayoutPluginOptions, 'layout'> {
+    const assetLoading = createAssetLoadingConfig(publicPath, publicPathFallbacks, assetRetry);
+    publicPath = assetLoading?.publicPath ?? publicPath;
     let manifestContent: Manifest | undefined;
 
     if (typeof manifest === 'string') {
@@ -31,6 +41,16 @@ export function createLayoutPlugin({
         apply({options, renderContent, commonOptions}) {
             if (!options) {
                 return;
+            }
+
+            if (assetLoading) {
+                renderContent.assetLoading = {
+                    ...assetLoading,
+                    publicPath:
+                        publicPath.startsWith('/') && !publicPath.startsWith('//')
+                            ? posix.normalize((options.prefix ?? '') + publicPath)
+                            : publicPath,
+                };
             }
 
             if (typeof manifest === 'function') {

@@ -1,7 +1,14 @@
+export {renderScripts} from './utils/renderScripts.js';
+export type {AssetRenderState} from './types.js';
 export {generateRenderContent} from './utils/generateRenderContent.js';
 export {renderHeadContent} from './utils/renderHeadContent.js';
 export {renderBodyContent} from './utils/renderBodyContent.js';
 export {createRenderFunction} from './render.js';
+export type {
+    PublicPathFallbacks,
+    AssetRetryOptions,
+    AssetLoadError,
+} from './plugins/layout/asset-loading/types.js';
 export {
     createGoogleAnalyticsPlugin,
     createYandexMetrikaPlugin,
