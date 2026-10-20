@@ -20,6 +20,9 @@ export function renderHeadContent(content: HeadContent, state: AssetRenderState 
         ? createAssetRenderer(helpers, content.assetLoading, state)
         : undefined;
 
+    // All managed stylesheets and scripts go into one registration script, emitted
+    // right after bootstrap; their original tags are skipped below.
+    const batch = loader?.register(styleSheets, scripts);
     const baseAttrs = base ? helpers.attrs({...base}) : '';
 
     return `
@@ -28,6 +31,7 @@ export function renderHeadContent(content: HeadContent, state: AssetRenderState 
         <title>${escapeHTML(title)}</title>
         ${[
             loader?.bootstrap() ?? '',
+            batch?.html ?? '',
             ...scripts.map(
                 (script) =>
                     loader?.preload(script) ??
@@ -40,9 +44,9 @@ export function renderHeadContent(content: HeadContent, state: AssetRenderState 
             ),
             ...links.map((link) => helpers.renderLink(link)),
             ...meta.map((metaData) => helpers.renderMeta(metaData)),
-            ...styleSheets.map((style) => loader?.style(style) ?? helpers.renderStyle(style)),
+            ...styleSheets.map((style) => (batch?.has(style) ? '' : helpers.renderStyle(style))),
             ...inlineStyleSheets.map((text) => helpers.renderInlineStyle(text)),
-            ...scripts.map((script) => loader?.script(script) ?? helpers.renderScript(script)),
+            ...scripts.map((script) => (batch?.has(script) ? '' : helpers.renderScript(script))),
             ...inlineScripts.map((text) => helpers.renderInlineScript(text)),
         ]
             .filter(Boolean)
