@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.0](https://github.com/gravity-ui/app-layout/compare/v2.6.0...v2.7.0) (2026-10-20)
+
+
+### Features
+
+* **layout:** register initial assets in one inline script ([#72](https://github.com/gravity-ui/app-layout/issues/72)) ([b5e3aa2](https://github.com/gravity-ui/app-layout/commit/b5e3aa2b91bfaf326601d20026a7c75b3f3f8d14))
+
 ## [2.6.0](https://github.com/gravity-ui/app-layout/compare/v2.5.1...v2.6.0) (2026-10-16)
 
 
