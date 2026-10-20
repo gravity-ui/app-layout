@@ -13,12 +13,23 @@ export function serializeBootstrap(config: AssetLoadingConfig): string {
 }`;
 }
 
-export function serializeAssetRegistration(asset: Asset, originalHtml: string): string {
+/**
+ * One inline script registering every managed asset of a fragment, in order.
+ * Without a loader (bootstrap failed) the original tags are written back while
+ * the HTML is still being parsed, so the page loads exactly as without fallbacks.
+ * @param assets - Managed assets in head order.
+ * @param originalHtml - The original tags of those assets, for recovery.
+ * @returns Inline script content.
+ */
+export function serializeAssetRegistrations(assets: Asset[], originalHtml: string): string {
     return `(function () {
     var loader = window.__APP_LAYOUT_ASSET_LOADER__;
     var current = document.currentScript;
+    var nonce = current ? current.nonce : '';
     if (loader) {
-        loader.enqueue(${serializeInlineValue(asset)}, current ? current.nonce : '');
+        ${serializeInlineValue(assets)}.forEach(function (asset) {
+            loader.enqueue(asset, nonce);
+        });
     } else if (current && document.readyState === 'loading') {
         document.write(${serializeInlineValue(originalHtml)});
     }

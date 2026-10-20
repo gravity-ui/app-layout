@@ -16,9 +16,13 @@ export function renderScripts(
     const loader = content.assetLoading
         ? createAssetRenderer(content.helpers, content.assetLoading, state)
         : undefined;
+    const batch = loader?.register([], scripts);
     return [
         loader?.bootstrap() ?? '',
-        ...scripts.map((script) => loader?.script(script) ?? content.helpers.renderScript(script)),
+        batch?.html ?? '',
+        ...scripts.map((script) =>
+            batch?.has(script) ? '' : content.helpers.renderScript(script),
+        ),
     ]
         .filter(Boolean)
         .join('\n');

@@ -51,3 +51,19 @@ test('streaming shares bootstrap state across different content objects without 
     expect(renderHeadContent(next)).toContain('appLayoutAssetLoader');
     expect(content.helpers.renderScript({src: '/build/first.js', defer: true})).toBe(plain);
 });
+
+test('registers all managed assets in one inline script and drops their original tags', () => {
+    const render = createRenderFunction([
+        createLayoutPlugin({manifest, publicPathFallbacks: ['/backup/']}),
+    ]);
+    const html = render({...params, scripts: [{src: '/build/extra.js', defer: true}]});
+    expect(html.match(/var loader = window\.__APP_LAYOUT_ASSET_LOADER__/g)).toHaveLength(1);
+    // Head order: stylesheets, then scripts in the order they were contributed.
+    expect(html).toMatch(/"path":"app\.css"[^]*"path":"extra\.js"[^]*"path":"app\.js"/);
+    expect(html).not.toContain('<link rel="stylesheet"');
+    expect(html).not.toContain('<script src="/build/app.js"');
+    expect(html).not.toContain('<script src="/build/extra.js"');
+    expect(html.indexOf('"path":"app.css"')).toBeLessThan(
+        html.indexOf('rel="preload" data-app-layout-preload=""'),
+    );
+});

@@ -1,6 +1,6 @@
 /** @jest-environment jsdom */
 import {createAssetLoadingConfig} from './config.js';
-import {serializeAssetRegistration, serializeBootstrap} from './serialization.js';
+import {serializeAssetRegistrations, serializeBootstrap} from './serialization.js';
 import type {AssetLoader, PublicPathFallbacks} from './types.js';
 
 const globals = window as Window & {__APP_LAYOUT_ASSET_LOADER__?: AssetLoader};
@@ -33,7 +33,7 @@ test.each<PublicPathFallbacks>([
     expect(source).not.toMatch(/__awaiter|__generator|__name|<\/script/i);
     // eslint-disable-next-line no-new-func
     expect(() => new Function(source)).not.toThrow();
-    const registration = serializeAssetRegistration(asset, original);
+    const registration = serializeAssetRegistrations([asset], original);
     expect(registration).not.toMatch(/<\/script/i);
 });
 
@@ -64,7 +64,7 @@ test.each(['WeakMap', 'selector', 'listener'])(
         const remove = jest.spyOn(window, 'removeEventListener');
         expect(() => window.eval(source)).not.toThrow();
         expect(globals.__APP_LAYOUT_ASSET_LOADER__).toBeUndefined();
-        window.eval(serializeAssetRegistration(asset, original));
+        window.eval(serializeAssetRegistrations([asset], original));
         expect(write).toHaveBeenCalledWith(original);
         if (failure === 'listener') {
             expect(remove).toHaveBeenCalledWith('error', expect.any(Function), true);
@@ -75,15 +75,31 @@ test.each(['WeakMap', 'selector', 'listener'])(
 test('never document.writes after parsing or retries a partially accepted registration', () => {
     const write = jest.spyOn(document, 'write').mockImplementation(() => {});
     jest.spyOn(document, 'readyState', 'get').mockReturnValue('complete');
-    window.eval(serializeAssetRegistration(asset, original));
+    window.eval(serializeAssetRegistrations([asset], original));
     expect(write).not.toHaveBeenCalled();
     globals.__APP_LAYOUT_ASSET_LOADER__ = {
         enqueue: () => {
             throw new Error('partially accepted');
         },
     };
-    expect(() => window.eval(serializeAssetRegistration(asset, original))).toThrow(
+    expect(() => window.eval(serializeAssetRegistrations([asset], original))).toThrow(
         'partially accepted',
     );
     expect(write).not.toHaveBeenCalled();
+});
+
+test('registers every asset of a fragment from one script, in order, with one nonce', () => {
+    const enqueue = jest.fn();
+    globals.__APP_LAYOUT_ASSET_LOADER__ = {enqueue};
+    const current = document.createElement('script');
+    current.nonce = 'test';
+    jest.spyOn(document, 'currentScript', 'get').mockReturnValue(current);
+    const style = {type: 'style' as const, path: 'app.css', originalUrl: '/build/app.css'};
+    const source = serializeAssetRegistrations([style, asset], original);
+    expect(source.match(/loader\.enqueue/g)).toHaveLength(1);
+    window.eval(source);
+    expect(enqueue.mock.calls).toEqual([
+        [style, 'test'],
+        [asset, 'test'],
+    ]);
 });

@@ -1,18 +1,20 @@
 import type {AssetRenderState, RenderHelpers, Script, Stylesheet} from '../../../types.js';
 
 import {createScriptAsset, createStyleAsset} from './assets.js';
-import {serializeAssetRegistration, serializeBootstrap} from './serialization.js';
+import {serializeAssetRegistrations, serializeBootstrap} from './serialization.js';
 import type {Asset, AssetLoadingConfig} from './types.js';
+
+/** Managed assets of one fragment: their single registration script and which items it covers. */
+export interface AssetBatch {
+    html: string;
+    has(item: Script | Stylesheet): boolean;
+}
 
 export function createAssetRenderer(
     helpers: RenderHelpers,
     config: AssetLoadingConfig,
     state: AssetRenderState,
 ) {
-    function renderAsset(asset: Asset, originalHtml: string): string {
-        return helpers.renderInlineScript(serializeAssetRegistration(asset, originalHtml));
-    }
-
     return {
         bootstrap(): string {
             if (state.bootstrapEmitted) {
@@ -22,17 +24,40 @@ export function createAssetRenderer(
             state.bootstrapEmitted = true;
             return html;
         },
-        script(script: Script): string {
-            const asset = createScriptAsset(script, config.publicPath);
-            return asset
-                ? renderAsset(asset, helpers.renderScript(script))
-                : helpers.renderScript(script);
-        },
-        style(style: Stylesheet): string {
-            const asset = createStyleAsset(style, config.publicPath);
-            return asset
-                ? renderAsset(asset, helpers.renderStyle(style))
-                : helpers.renderStyle(style);
+        /**
+         * Collects every managed stylesheet and script of a fragment into one
+         * registration script, in head order: stylesheets first, then scripts.
+         */
+        register(styles: Stylesheet[], scripts: Script[]): AssetBatch {
+            const managed = new Set<Script | Stylesheet>();
+            const assets: Asset[] = [];
+            const originalHtml: string[] = [];
+
+            for (const style of styles) {
+                const asset = createStyleAsset(style, config.publicPath);
+                if (asset) {
+                    managed.add(style);
+                    assets.push(asset);
+                    originalHtml.push(helpers.renderStyle(style));
+                }
+            }
+            for (const script of scripts) {
+                const asset = createScriptAsset(script, config.publicPath);
+                if (asset) {
+                    managed.add(script);
+                    assets.push(asset);
+                    originalHtml.push(helpers.renderScript(script));
+                }
+            }
+
+            return {
+                html: assets.length
+                    ? helpers.renderInlineScript(
+                          serializeAssetRegistrations(assets, originalHtml.join('\n')),
+                      )
+                    : '',
+                has: (item) => managed.has(item),
+            };
         },
         preload(script: Script): string {
             const link = {
