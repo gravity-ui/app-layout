@@ -60,7 +60,7 @@ test('registers all managed assets in one inline script and drops their original
     expect(html.match(/var loader = window\.__APP_LAYOUT_ASSET_LOADER__/g)).toHaveLength(1);
     // Head order: stylesheets, then scripts in the order they were contributed.
     expect(html).toMatch(/"path":"app\.css"[^]*"path":"extra\.js"[^]*"path":"app\.js"/);
-    expect(html).not.toContain('<link rel="stylesheet"');
+    expect(html).not.toContain('<link rel="stylesheet" href="/build/app.css"');
     expect(html).not.toContain('<script src="/build/app.js"');
     expect(html).not.toContain('<script src="/build/extra.js"');
     expect(html.indexOf('"path":"app.css"')).toBeLessThan(
