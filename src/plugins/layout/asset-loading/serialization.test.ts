@@ -4,9 +4,8 @@ import {serializeAssetRegistrations, serializeBootstrap} from './serialization.j
 import type {AssetLoader, PublicPathFallbacks} from './types.js';
 
 const globals = window as Window & {__APP_LAYOUT_ASSET_LOADER__?: AssetLoader};
-const original =
-    '<script src="/build/app.js" defer="true" nonce="test" crossorigin="anonymous"></script>';
-const asset = {type: 'script' as const, path: 'app.js', originalUrl: '/build/app.js'};
+const original = '<script src="/build/app.js" defer crossorigin="anonymous" nonce="test"></script>';
+const asset = {type: 'script' as const, path: 'app.js', crossOrigin: 'anonymous' as const};
 
 afterEach(() => {
     delete globals.__APP_LAYOUT_ASSET_LOADER__;
@@ -33,7 +32,7 @@ test.each<PublicPathFallbacks>([
     expect(source).not.toMatch(/__awaiter|__generator|__name|<\/script/i);
     // eslint-disable-next-line no-new-func
     expect(() => new Function(source)).not.toThrow();
-    const registration = serializeAssetRegistrations([asset], original);
+    const registration = serializeAssetRegistrations([asset], '/build/');
     expect(registration).not.toMatch(/<\/script/i);
 });
 
@@ -64,7 +63,7 @@ test.each(['WeakMap', 'selector', 'listener'])(
         const remove = jest.spyOn(window, 'removeEventListener');
         expect(() => window.eval(source)).not.toThrow();
         expect(globals.__APP_LAYOUT_ASSET_LOADER__).toBeUndefined();
-        window.eval(serializeAssetRegistrations([asset], original));
+        window.eval(serializeAssetRegistrations([asset], '/build/'));
         expect(write).toHaveBeenCalledWith(original);
         if (failure === 'listener') {
             expect(remove).toHaveBeenCalledWith('error', expect.any(Function), true);
@@ -75,14 +74,14 @@ test.each(['WeakMap', 'selector', 'listener'])(
 test('never document.writes after parsing or retries a partially accepted registration', () => {
     const write = jest.spyOn(document, 'write').mockImplementation(() => {});
     jest.spyOn(document, 'readyState', 'get').mockReturnValue('complete');
-    window.eval(serializeAssetRegistrations([asset], original));
+    window.eval(serializeAssetRegistrations([asset], '/build/'));
     expect(write).not.toHaveBeenCalled();
     globals.__APP_LAYOUT_ASSET_LOADER__ = {
         enqueue: () => {
             throw new Error('partially accepted');
         },
     };
-    expect(() => window.eval(serializeAssetRegistrations([asset], original))).toThrow(
+    expect(() => window.eval(serializeAssetRegistrations([asset], '/build/'))).toThrow(
         'partially accepted',
     );
     expect(write).not.toHaveBeenCalled();
@@ -94,12 +93,28 @@ test('registers every asset of a fragment from one script, in order, with one no
     const current = document.createElement('script');
     current.nonce = 'test';
     jest.spyOn(document, 'currentScript', 'get').mockReturnValue(current);
-    const style = {type: 'style' as const, path: 'app.css', originalUrl: '/build/app.css'};
-    const source = serializeAssetRegistrations([style, asset], original);
+    const style = {type: 'style' as const, path: 'app.css'};
+    const source = serializeAssetRegistrations([style, asset], '/build/');
     expect(source.match(/loader\.enqueue/g)).toHaveLength(1);
     window.eval(source);
     expect(enqueue.mock.calls).toEqual([
         [style, 'test'],
         [asset, 'test'],
     ]);
+});
+
+test('recovery rebuilds stylesheet and script tags from the asset list', () => {
+    const write = jest.spyOn(document, 'write').mockImplementation(() => {});
+    jest.spyOn(document, 'readyState', 'get').mockReturnValue('loading');
+    const current = document.createElement('script');
+    current.nonce = 'test';
+    jest.spyOn(document, 'currentScript', 'get').mockReturnValue(current);
+    const style = {type: 'style' as const, path: 'css/a&b.css'};
+    const plain = {type: 'script' as const, path: 'js/plain.js'};
+    window.eval(serializeAssetRegistrations([style, asset, plain], 'https://cdn.test/build/'));
+    expect(write).toHaveBeenCalledWith(
+        '<link rel="stylesheet" href="https://cdn.test/build/css/a&amp;b.css">' +
+            '<script src="https://cdn.test/build/app.js" defer crossorigin="anonymous" nonce="test"></script>' +
+            '<script src="https://cdn.test/build/js/plain.js" defer nonce="test"></script>',
+    );
 });

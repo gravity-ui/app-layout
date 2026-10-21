@@ -20,9 +20,9 @@ export interface AssetLoadError {
     attempts: string[];
 }
 
+/** Serialized into HTML; the primary URL is `publicPath + path`, so it is not repeated here. */
 export interface Asset {
     type: 'script' | 'style';
-    originalUrl: string;
     path: string;
     crossOrigin?: '' | 'anonymous' | 'use-credentials';
 }

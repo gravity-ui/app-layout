@@ -16,7 +16,6 @@ export function createScriptAsset(script: Script, publicPath: string): Asset | u
     return {
         type: 'script',
         path,
-        originalUrl: script.src,
         crossOrigin: script.crossOrigin,
     };
 }
@@ -31,7 +30,6 @@ export function createStyleAsset(style: Stylesheet, publicPath: string): Asset |
     return {
         type: 'style',
         path,
-        originalUrl: style.href,
         crossOrigin: style.crossOrigin,
     };
 }

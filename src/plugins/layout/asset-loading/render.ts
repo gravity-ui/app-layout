@@ -31,14 +31,12 @@ export function createAssetRenderer(
         register(styles: Stylesheet[], scripts: Script[]): AssetBatch {
             const managed = new Set<Script | Stylesheet>();
             const assets: Asset[] = [];
-            const originalHtml: string[] = [];
 
             for (const style of styles) {
                 const asset = createStyleAsset(style, config.publicPath);
                 if (asset) {
                     managed.add(style);
                     assets.push(asset);
-                    originalHtml.push(helpers.renderStyle(style));
                 }
             }
             for (const script of scripts) {
@@ -46,14 +44,13 @@ export function createAssetRenderer(
                 if (asset) {
                     managed.add(script);
                     assets.push(asset);
-                    originalHtml.push(helpers.renderScript(script));
                 }
             }
 
             return {
                 html: assets.length
                     ? helpers.renderInlineScript(
-                          serializeAssetRegistrations(assets, originalHtml.join('\n')),
+                          serializeAssetRegistrations(assets, config.publicPath),
                       )
                     : '',
                 has: (item) => managed.has(item),

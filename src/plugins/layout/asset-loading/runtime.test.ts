@@ -40,7 +40,7 @@ function install(retry?: AssetRetryOptions, fallbacks = ['/backup/']) {
 }
 
 function asset(type: Asset['type'], path: string): Asset {
-    return {type, path, originalUrl: '/build/' + path, crossOrigin: 'anonymous'};
+    return {type, path, crossOrigin: 'anonymous'};
 }
 
 function element(selector: string): HTMLLinkElement | HTMLScriptElement {

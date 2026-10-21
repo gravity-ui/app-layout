@@ -90,7 +90,7 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
     }
 
     function enqueue(asset: Asset, nonce: string): void {
-        const key = asset.type + ':' + new URL(asset.originalUrl, location.href).href;
+        const key = asset.type + ':' + new URL(config.publicPath + asset.path, location.href).href;
 
         if (registeredAssets.has(key) || stopped) {
             return;
@@ -146,9 +146,7 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
     function loadAsset(asset: Asset, nonce: string): Promise<boolean> {
         const preferredIndex = bases.indexOf(preferredBase);
         const candidates = bases.slice(preferredIndex).concat(bases.slice(0, preferredIndex));
-        const urls = candidates.map((base) =>
-            base === config.publicPath ? asset.originalUrl : base + asset.path,
-        );
+        const urls = candidates.map((base) => base + asset.path);
         const attempts: string[] = [];
         let anchor: Comment | undefined;
         let element: HTMLScriptElement | HTMLLinkElement | undefined;
@@ -347,7 +345,7 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
             new CustomEvent('app-layout:asset-load-error', {
                 detail: {
                     type: asset.type,
-                    originalUrl: asset.originalUrl,
+                    originalUrl: config.publicPath + asset.path,
                     attempts,
                 },
             }),
