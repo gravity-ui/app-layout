@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.0](https://github.com/gravity-ui/app-layout/compare/v2.7.0...v2.8.0) (2026-10-21)
+
+
+### Features
+
+* **layout:** lean asset registration script ([#74](https://github.com/gravity-ui/app-layout/issues/74)) ([8b804e7](https://github.com/gravity-ui/app-layout/commit/8b804e791b4b67b42612f23bda4194c0738bbb9e))
+
 ## [2.7.0](https://github.com/gravity-ui/app-layout/compare/v2.6.0...v2.7.0) (2026-10-20)
 
 
