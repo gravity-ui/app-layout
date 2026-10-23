@@ -205,7 +205,7 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
                         }
                         active = false;
                         runSafely(() => {
-                            current.remove();
+                            discardAttemptElement(current);
                             handleAttemptError(null);
                         });
                     }, config.retry.timeoutMs);
@@ -325,7 +325,7 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
         }
 
         if (element instanceof HTMLScriptElement) {
-            element.async = false;
+            element.async = true;
             element.src = url;
         } else {
             element.rel = 'stylesheet';
@@ -333,6 +333,14 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
         }
 
         return element;
+    }
+
+    function discardAttemptElement(element: HTMLScriptElement | HTMLLinkElement): void {
+        element.remove();
+
+        if (element instanceof HTMLScriptElement) {
+            document.implementation.createHTMLDocument('').adoptNode(element);
+        }
     }
 
     function clearAttemptHandlers(element: HTMLScriptElement | HTMLLinkElement): void {

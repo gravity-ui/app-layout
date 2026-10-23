@@ -206,6 +206,33 @@ test('parallel styles keep candidate order and scripts wait for newly registered
     expect(document.querySelector('script')).not.toBeNull();
 });
 
+test('script timeout neutralizes the hanging primary so the fallback runs first', async () => {
+    const errors = jest.fn();
+    window.addEventListener('app-layout:asset-load-error', errors);
+    const loader = install({timeoutMs: 10});
+    loader.enqueue(asset('script', 'runtime.js'), 'nonce');
+    loader.enqueue(asset('script', 'app.js'), 'nonce');
+    await flush();
+    const primary = element('script') as HTMLScriptElement;
+    expect(primary.getAttribute('src')).toBe('/build/runtime.js');
+    expect(primary.async).toBe(true);
+    await jest.advanceTimersByTimeAsync(11);
+    expect(primary.isConnected).toBe(false);
+    expect(primary.ownerDocument).not.toBe(document);
+    const backup = element('script') as HTMLScriptElement;
+    expect(backup.getAttribute('src')).toBe('/backup/runtime.js');
+    expect(backup.async).toBe(true);
+    expect(backup.nonce).toBe('nonce');
+    succeed(backup);
+    await flush();
+    expect(element('script[src="/backup/app.js"]')).toBeDefined();
+    expect(document.querySelectorAll('script')).toHaveLength(2);
+    expect(primary.onload).toBeNull();
+    primary.dispatchEvent(new Event('load'));
+    expect(document.querySelectorAll('script')).toHaveLength(2);
+    expect(errors).not.toHaveBeenCalled();
+});
+
 test('script timeout exhaustion stops queued scripts', async () => {
     const errors = jest.fn();
     window.addEventListener('app-layout:asset-load-error', errors);
