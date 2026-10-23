@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.1](https://github.com/gravity-ui/app-layout/compare/v2.8.0...v2.8.1) (2026-10-23)
+
+
+### Bug Fixes
+
+* **layout:** run the fallback script when the primary attempt hangs ([#77](https://github.com/gravity-ui/app-layout/issues/77)) ([d095cfb](https://github.com/gravity-ui/app-layout/commit/d095cfb9fd128b44fb30ed3730dbdd015494b652))
+
 ## [2.8.0](https://github.com/gravity-ui/app-layout/compare/v2.7.0...v2.8.0) (2026-10-21)
 
 
