@@ -19,6 +19,8 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
     let preferredBase = config.publicPath;
     const retries = fallbacks.length ? config.retry.retries : 0;
     const failures = new WeakMap<EventTarget, (event: Event) => void>();
+    const nativeStyles = new Map<string, {attach(element: HTMLLinkElement): void; fail(): void}>();
+    const observer = new MutationObserver(discoverAddedNativeStyles);
     const registeredAssets = new Set<string>();
     const pendingStyles: Promise<boolean>[] = [];
     const scriptQueue: {asset: Asset; nonce: string}[] = [];
@@ -34,6 +36,7 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
         globals.__APP_LAYOUT_ASSET_LOADER__ = {enqueue};
     } catch (error) {
         window.removeEventListener('error', handleResourceError, true);
+        observer.disconnect();
         document.removeEventListener('DOMContentLoaded', handleDocumentReady);
         throw error;
     }
@@ -69,6 +72,24 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
         return value.endsWith('/') ? value : value + '/';
     }
 
+    function discoverAddedNativeStyles(records: MutationRecord[]): void {
+        records.forEach(({addedNodes}) =>
+            addedNodes.forEach((node: Node) => {
+                if (node instanceof HTMLLinkElement) {
+                    const dataId = node.getAttribute('data-app-layout-style');
+                    const pending = dataId === null ? undefined : nativeStyles.get(dataId);
+                    if (dataId !== null && pending) {
+                        nativeStyles.delete(dataId);
+                        if (!nativeStyles.size) {
+                            observer.disconnect();
+                        }
+                        pending.attach(node);
+                    }
+                }
+            }),
+        );
+    }
+
     function handleResourceError(event: Event): void {
         const target = event.target;
 
@@ -85,12 +106,20 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
     }
 
     function handleDocumentReady(): void {
+        const missingStyles = Array.from(nativeStyles.values());
+        nativeStyles.clear();
+        observer.disconnect();
+
+        missingStyles.forEach((style) => style.fail());
         documentReady = true;
         processScriptQueue();
     }
 
     function enqueue(asset: Asset, nonce: string): void {
-        const key = asset.type + ':' + new URL(config.publicPath + asset.path, location.href).href;
+        const key =
+            asset.dataId === undefined
+                ? asset.type + ':' + new URL(config.publicPath + asset.path, location.href).href
+                : 'native-style:' + asset.dataId;
 
         if (registeredAssets.has(key) || stopped) {
             return;
@@ -144,7 +173,7 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
     }
 
     function loadAsset(asset: Asset, nonce: string): Promise<boolean> {
-        const preferredIndex = bases.indexOf(preferredBase);
+        const preferredIndex = asset.dataId === undefined ? bases.indexOf(preferredBase) : 0;
         const candidates = bases.slice(preferredIndex).concat(bases.slice(0, preferredIndex));
         const urls = candidates.map((base) => base + asset.path);
         const attempts: string[] = [];
@@ -158,8 +187,25 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
 
         return new Promise((resolve) => {
             runSafely(() => {
-                anchor = createAssetAnchor(asset);
-                startAttempt();
+                if (asset.dataId === undefined) {
+                    anchor = createAssetAnchor(asset);
+                    startAttempt();
+                } else {
+                    nativeStyles.set(asset.dataId, {
+                        attach(current) {
+                            runSafely(() => {
+                                element = current;
+                                anchor = document.createComment('app-layout style');
+                                current.after(anchor);
+                                startAttempt(current);
+                            });
+                        },
+                        fail() {
+                            runSafely(() => finish(false));
+                        },
+                    });
+                    observer.observe(document.documentElement, {childList: true, subtree: true});
+                }
             });
 
             // Includes later retries and event callbacks, not only the initial attempt.
@@ -177,11 +223,11 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
                 }
             }
 
-            function startAttempt(): void {
+            function startAttempt(nativeElement?: HTMLLinkElement): void {
                 const url = urls[candidateIndex] as string;
 
                 attempts.push(url);
-                const current = createAssetElement(asset, url, nonce);
+                const current = nativeElement ?? createAssetElement(asset, url, nonce);
                 element = current;
                 let active = true;
                 current.onload = () => {
@@ -210,7 +256,9 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
                         });
                     }, config.retry.timeoutMs);
                 }
-                anchor?.before(current);
+                if (!nativeElement) {
+                    anchor?.before(current);
+                }
             }
 
             function handleAttemptError(event: Event | null): void {
@@ -252,6 +300,9 @@ export function installAssetLoader(config: AssetLoadingConfig): void {
 
                     if (element) {
                         clearAttemptHandlers(element);
+                        if (!success && asset.type === 'style') {
+                            element.remove();
+                        }
                     }
 
                     anchor?.remove();

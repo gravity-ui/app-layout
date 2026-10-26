@@ -25,8 +25,16 @@ export function getRenderHelpers(params: {nonce?: string}): RenderHelpers {
     function renderInlineScript(content: string) {
         return `<script ${attrs({nonce: params.nonce})}>${content}</script>`;
     }
-    function renderStyle({href, crossOrigin}: Stylesheet) {
-        return href ? `<link ${attrs({rel: 'stylesheet', crossorigin: crossOrigin, href})}>` : '';
+    function renderStyle({href, crossOrigin, dataId}: Stylesheet) {
+        return href
+            ? `<link ${attrs({
+                  rel: 'stylesheet',
+                  crossorigin: crossOrigin,
+                  href,
+                  nonce: params.nonce,
+                  'data-app-layout-style': dataId || undefined,
+              })}>`
+            : '';
     }
     function renderInlineStyle(content: string) {
         return `<style ${attrs({nonce: params.nonce})}>${content}</style>`;

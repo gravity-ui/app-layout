@@ -4,6 +4,7 @@ import {installAssetLoader} from './runtime.js';
 import type {Asset, AssetLoader, AssetRetryOptions} from './types.js';
 
 const globals = window as Window & {__APP_LAYOUT_ASSET_LOADER__?: AssetLoader};
+let observers: MutationObserver[];
 let listeners: {
     type: string;
     listener: EventListenerOrEventListenerObject;
@@ -15,17 +16,31 @@ beforeEach(() => {
     document.head.innerHTML = '';
     delete globals.__APP_LAYOUT_ASSET_LOADER__;
     listeners = [];
+    observers = [];
+    const Observer = window.MutationObserver;
+    jest.spyOn(window, 'MutationObserver').mockImplementation((callback) => {
+        const observer = new Observer(callback);
+        observers.push(observer);
+        return observer;
+    });
     const add = window.addEventListener.bind(window);
     jest.spyOn(window, 'addEventListener').mockImplementation((type, listener, options) => {
         listeners.push({type, listener, options});
         add(type, listener, options);
     });
+    const addDocument = document.addEventListener.bind(document);
+    jest.spyOn(document, 'addEventListener').mockImplementation((type, listener, options) => {
+        listeners.push({type, listener, options});
+        addDocument(type, listener, options);
+    });
     jest.spyOn(document, 'readyState', 'get').mockReturnValue('complete');
 });
 
 afterEach(() => {
+    observers.forEach((observer) => observer.disconnect());
     for (const {type, listener, options} of listeners) {
         window.removeEventListener(type, listener, options);
+        document.removeEventListener(type, listener, options);
     }
     jest.restoreAllMocks();
     jest.useRealTimers();
@@ -263,3 +278,94 @@ test.each<Asset['type']>(['style', 'script'])(
         expect(jest.getTimerCount()).toBe(0);
     },
 );
+
+function nativeStyle(path = 'app.css', dataId = '0') {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = '/build/' + path;
+    link.crossOrigin = 'anonymous';
+    link.setAttribute('data-app-layout-style', dataId);
+    document.head.appendChild(link);
+    return link;
+}
+
+test('native style timeout starts when its streamed link appears, not at registration', async () => {
+    jest.spyOn(document, 'readyState', 'get').mockReturnValue('loading');
+    const loader = install({timeoutMs: 10});
+    const style = {...asset('style', 'app.css'), dataId: '0'};
+    loader.enqueue(style, 'nonce');
+    loader.enqueue(asset('script', 'app.js'), 'nonce');
+    await jest.advanceTimersByTimeAsync(30);
+    expect(document.querySelector('link')).toBeNull();
+    expect(document.querySelector('script')).toBeNull();
+    const primary = nativeStyle();
+    const following = document.createElement('style');
+    document.head.appendChild(following);
+    await flush();
+    expect(document.querySelectorAll('link')).toHaveLength(1);
+    const oldLoad = primary.onload;
+    await jest.advanceTimersByTimeAsync(11);
+    expect(primary.isConnected).toBe(false);
+    const backup = element('link');
+    expect(backup.getAttribute('href')).toBe('/backup/app.css');
+    expect(backup.nonce).toBe('nonce');
+    expect(backup.crossOrigin).toBe('anonymous');
+    expect(backup.compareDocumentPosition(following)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    oldLoad?.call(primary, new Event('load'));
+    expect(document.querySelector('script')).toBeNull();
+    succeed(backup);
+    await flush();
+    expect(document.querySelector('script')).toBeNull();
+    jest.spyOn(document, 'readyState', 'get').mockReturnValue('interactive');
+    document.dispatchEvent(new Event('DOMContentLoaded'));
+    await flush();
+    const script = element('script');
+    expect(script.getAttribute('src')).toBe('/backup/app.js');
+    succeed(script);
+});
+
+test('native CSS exhaustion removes owned links, preserves other links, and releases JS', async () => {
+    const loader = install({timeoutMs: 10});
+    const errors = jest.fn();
+    window.addEventListener('app-layout:asset-load-error', errors);
+    const other = document.createElement('link');
+    other.rel = 'stylesheet';
+    other.href = '/build/app.css';
+    document.head.appendChild(other);
+    const style = {...asset('style', 'app.css'), dataId: '0'};
+    loader.enqueue(style, 'nonce');
+    loader.enqueue(asset('script', 'app.js'), 'nonce');
+    const primary = nativeStyle();
+    await flush();
+    await jest.advanceTimersByTimeAsync(25);
+    expect(primary.isConnected).toBe(false);
+    expect(document.querySelectorAll('link')).toHaveLength(1);
+    expect(other.isConnected).toBe(true);
+    expect(errors).toHaveBeenCalledTimes(1);
+    expect(errors.mock.calls[0][0].detail).toEqual({
+        type: 'style',
+        originalUrl: '/build/app.css',
+        attempts: ['/build/app.css', '/backup/app.css'],
+    });
+    expect(element('script').getAttribute('src')).toBe('/build/app.js');
+    succeed(element('script'));
+});
+
+test('later native CSS keeps primary first after a successful backup script', async () => {
+    const loader = install();
+    loader.enqueue(asset('script', 'early.js'), 'nonce');
+    await flush();
+    fail(element('script'));
+    await flush();
+    succeed(element('script'));
+    const style = {...asset('style', 'app.css'), dataId: '0'};
+    loader.enqueue(style, 'nonce');
+    const primary = nativeStyle();
+    await flush();
+    expect(document.querySelectorAll('link')).toHaveLength(1);
+    expect(element('link')).toBe(primary);
+    fail(primary);
+    await flush();
+    expect(element('link').getAttribute('href')).toBe('/backup/app.css');
+    succeed(element('link'));
+});

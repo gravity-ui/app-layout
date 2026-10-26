@@ -103,7 +103,7 @@ test('registers every asset of a fragment from one script, in order, with one no
     ]);
 });
 
-test('recovery rebuilds stylesheet and script tags from the asset list', () => {
+test('bootstrap recovery restores scripts without duplicating native styles', () => {
     const write = jest.spyOn(document, 'write').mockImplementation(() => {});
     jest.spyOn(document, 'readyState', 'get').mockReturnValue('loading');
     const current = document.createElement('script');
@@ -113,8 +113,7 @@ test('recovery rebuilds stylesheet and script tags from the asset list', () => {
     const plain = {type: 'script' as const, path: 'js/plain.js'};
     window.eval(serializeAssetRegistrations([style, asset, plain], 'https://cdn.test/build/'));
     expect(write).toHaveBeenCalledWith(
-        '<link rel="stylesheet" href="https://cdn.test/build/css/a&amp;b.css">' +
-            '<script src="https://cdn.test/build/app.js" defer crossorigin="anonymous" nonce="test"></script>' +
+        '<script src="https://cdn.test/build/app.js" defer crossorigin="anonymous" nonce="test"></script>' +
             '<script src="https://cdn.test/build/js/plain.js" defer nonce="test"></script>',
     );
 });
