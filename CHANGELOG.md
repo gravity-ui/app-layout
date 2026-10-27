@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.2](https://github.com/gravity-ui/app-layout/compare/v2.8.1...v2.8.2) (2026-10-27)
+
+
+### Bug Fixes
+
+* **layout:** render initial stylesheets in server HTML ([#79](https://github.com/gravity-ui/app-layout/issues/79)) ([ea9ba7a](https://github.com/gravity-ui/app-layout/commit/ea9ba7a8c9a587aaa9c1c7f33f1c775bab0f0796))
+
 ## [2.8.1](https://github.com/gravity-ui/app-layout/compare/v2.8.0...v2.8.1) (2026-10-23)
 
 
