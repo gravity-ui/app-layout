@@ -4,10 +4,14 @@ import {createScriptAsset, createStyleAsset} from './assets.js';
 import {serializeAssetRegistrations, serializeBootstrap} from './serialization.js';
 import type {Asset, AssetLoadingConfig} from './types.js';
 
-/** Managed assets of one fragment: their single registration script and which items it covers. */
+export type StyleRenderDecision = {action: 'render'; dataId?: string} | {action: 'skip'};
+
+/** Asset registration and render decisions for one fragment. */
 export interface AssetBatch {
     html: string;
-    has(item: Script | Stylesheet): boolean;
+    hasScript(script: Script): boolean;
+    /** Allows each managed stylesheet to render once; unmanaged styles are always rendered. */
+    takeStyle(style: Stylesheet): StyleRenderDecision;
 }
 
 export function createAssetRenderer(
@@ -29,20 +33,25 @@ export function createAssetRenderer(
          * registration script, in head order: stylesheets first, then scripts.
          */
         register(styles: Stylesheet[], scripts: Script[]): AssetBatch {
-            const managed = new Set<Script | Stylesheet>();
+            const managedScripts = new Set<Script>();
+            const managedStyles = new Map<string, StyleRenderDecision>();
             const assets: Asset[] = [];
 
             for (const style of styles) {
                 const asset = createStyleAsset(style, config.publicPath);
-                if (asset) {
-                    managed.add(style);
-                    assets.push(asset);
+                if (!asset || managedStyles.has(style.href)) {
+                    continue;
                 }
+
+                const nativeAsset = {...asset, dataId: String(managedStyles.size)};
+                assets.push(nativeAsset);
+                managedStyles.set(style.href, {action: 'render', dataId: nativeAsset.dataId});
             }
+
             for (const script of scripts) {
                 const asset = createScriptAsset(script, config.publicPath);
                 if (asset) {
-                    managed.add(script);
+                    managedScripts.add(script);
                     assets.push(asset);
                 }
             }
@@ -53,7 +62,15 @@ export function createAssetRenderer(
                           serializeAssetRegistrations(assets, config.publicPath),
                       )
                     : '',
-                has: (item) => managed.has(item),
+                hasScript: (script) => managedScripts.has(script),
+                takeStyle(style) {
+                    const decision = managedStyles.get(style.href);
+                    if (!decision) {
+                        return {action: 'render'};
+                    }
+                    managedStyles.set(style.href, {action: 'skip'});
+                    return decision;
+                },
             };
         },
         preload(script: Script): string {

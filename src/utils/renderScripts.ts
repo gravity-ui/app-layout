@@ -21,7 +21,7 @@ export function renderScripts(
         loader?.bootstrap() ?? '',
         batch?.html ?? '',
         ...scripts.map((script) =>
-            batch?.has(script) ? '' : content.helpers.renderScript(script),
+            batch?.hasScript(script) ? '' : content.helpers.renderScript(script),
         ),
     ]
         .filter(Boolean)

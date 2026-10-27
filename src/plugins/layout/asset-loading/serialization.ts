@@ -15,9 +15,8 @@ export function serializeBootstrap(config: AssetLoadingConfig): string {
 
 /**
  * One inline script registering every managed asset of a fragment, in order.
- * Without a loader (bootstrap failed) the original tags are rebuilt from the same
- * list and written back while the HTML is still being parsed, so the page loads
- * exactly as without fallbacks.
+ * Without a loader (bootstrap failed), restore script tags while HTML is being
+ * parsed. Stylesheets already have native links in the following HTML.
  * @param assets - Managed assets in head order.
  * @param publicPath - Primary base URL of those assets.
  * @returns Inline script content.
@@ -34,11 +33,12 @@ export function serializeAssetRegistrations(assets: Asset[], publicPath: string)
             loader.enqueue(asset, nonce);
         });
     } else if (current && document.readyState === 'loading') {
-        document.write(assets.map(function (asset) {
+        document.write(assets.filter(function (asset) {
+            return asset.type === 'script';
+        }).map(function (asset) {
             var attrs = ' crossorigin="' + asset.crossOrigin + '"';
             if (asset.crossOrigin === undefined) attrs = '';
             var url = (base + asset.path).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
-            if (asset.type === 'style') return '<link rel="stylesheet" href="' + url + '"' + attrs + '>';
             return '<script src="' + url + '" defer' + attrs + (nonce ? ' nonce="' + nonce + '"' : '') + '><\\/script>';
         }).join(''));
     }

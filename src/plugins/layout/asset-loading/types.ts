@@ -25,6 +25,7 @@ export interface Asset {
     type: 'script' | 'style';
     path: string;
     crossOrigin?: '' | 'anonymous' | 'use-credentials';
+    dataId?: string;
 }
 
 export interface AssetLoadingConfig {

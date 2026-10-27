@@ -13,6 +13,7 @@ export interface Script {
 export interface Stylesheet {
     href: string;
     crossOrigin?: '' | 'anonymous' | 'use-credentials';
+    dataId?: string;
 }
 
 export interface Link {

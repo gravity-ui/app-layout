@@ -1,5 +1,6 @@
 import escapeHTML from 'escape-html';
 
+import type {StyleRenderDecision} from '../plugins/layout/asset-loading/render.js';
 import {createAssetRenderer} from '../plugins/layout/asset-loading/render.js';
 import type {AssetRenderState, HeadContent} from '../types.js';
 
@@ -20,8 +21,8 @@ export function renderHeadContent(content: HeadContent, state: AssetRenderState 
         ? createAssetRenderer(helpers, content.assetLoading, state)
         : undefined;
 
-    // All managed stylesheets and scripts go into one registration script, emitted
-    // right after bootstrap; their original tags are skipped below.
+    // Register before native stylesheets: an inline script placed after a hanging
+    // stylesheet could itself be blocked before installing the recovery handlers.
     const batch = loader?.register(styleSheets, scripts);
     const baseAttrs = base ? helpers.attrs({...base}) : '';
 
@@ -44,9 +45,15 @@ export function renderHeadContent(content: HeadContent, state: AssetRenderState 
             ),
             ...links.map((link) => helpers.renderLink(link)),
             ...meta.map((metaData) => helpers.renderMeta(metaData)),
-            ...styleSheets.map((style) => (batch?.has(style) ? '' : helpers.renderStyle(style))),
+            ...styleSheets.map((style) => {
+                const decision: StyleRenderDecision = batch?.takeStyle(style) ?? {action: 'render'};
+                if (decision.action === 'skip') return '';
+                return helpers.renderStyle({...style, dataId: decision.dataId});
+            }),
             ...inlineStyleSheets.map((text) => helpers.renderInlineStyle(text)),
-            ...scripts.map((script) => (batch?.has(script) ? '' : helpers.renderScript(script))),
+            ...scripts.map((script) =>
+                batch?.hasScript(script) ? '' : helpers.renderScript(script),
+            ),
             ...inlineScripts.map((text) => helpers.renderInlineScript(text)),
         ]
             .filter(Boolean)

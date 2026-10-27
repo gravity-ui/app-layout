@@ -52,7 +52,7 @@ test('streaming shares bootstrap state across different content objects without 
     expect(content.helpers.renderScript({src: '/build/first.js', defer: true})).toBe(plain);
 });
 
-test('registers all managed assets in one inline script and drops their original tags', () => {
+test('registers managed assets before native styles and omits managed script tags', () => {
     const render = createRenderFunction([
         createLayoutPlugin({manifest, publicPathFallbacks: ['/backup/']}),
     ]);
@@ -60,10 +60,32 @@ test('registers all managed assets in one inline script and drops their original
     expect(html.match(/var loader = window\.__APP_LAYOUT_ASSET_LOADER__/g)).toHaveLength(1);
     // Head order: stylesheets, then scripts in the order they were contributed.
     expect(html).toMatch(/"path":"app\.css"[^]*"path":"extra\.js"[^]*"path":"app\.js"/);
-    expect(html).not.toContain('<link rel="stylesheet" href="/build/app.css"');
+    expect(html).toContain('href="/build/app.css"');
+    expect(html).toContain('data-app-layout-style="0"');
+    expect(html.indexOf('loader.enqueue')).toBeLessThan(html.indexOf('href="/build/app.css"'));
     expect(html).not.toContain('<script src="/build/app.js"');
     expect(html).not.toContain('<script src="/build/extra.js"');
     expect(html.indexOf('"path":"app.css"')).toBeLessThan(
         html.indexOf('rel="preload" data-app-layout-preload=""'),
+    );
+});
+
+test('native styles retain order and are deduplicated within the head', () => {
+    const plugins = [createLayoutPlugin({manifest, publicPathFallbacks: ['/backup/']})];
+    const repeated = {href: '/build/shared.css', crossOrigin: 'anonymous' as const};
+    const content = generateRenderContent(plugins, {
+        ...params,
+        styleSheets: [repeated, repeated, {href: 'https://other.test/external.css'}, {...repeated}],
+    });
+    const state = {};
+    renderScripts(content, [{src: '/build/early.js', defer: true}], state);
+    const html = renderHeadContent(content, state);
+    const nativeLinks = html.match(/<link[^>]+rel="stylesheet"[^>]*>/g) || [];
+    expect(nativeLinks.filter((link) => link.includes('href="/build/shared.css"'))).toHaveLength(1);
+    const shared = nativeLinks.find((link) => link.includes('href="/build/shared.css"'));
+    expect(shared).toContain('nonce="test-nonce"');
+    expect(shared).toContain('crossorigin="anonymous"');
+    expect(html.indexOf('href="/build/shared.css"')).toBeLessThan(
+        html.indexOf('href="https://other.test/external.css"'),
     );
 });
